@@ -31,7 +31,9 @@
 3. Introducción
 4. Contexto del Proyecto
 5. Alcance del MVP 
+
 ────────────────────────
+
 # Parte II - Arquitectura 
 
 ────────────────────────
