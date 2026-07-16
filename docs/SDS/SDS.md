@@ -28,7 +28,7 @@
 2. Filosofía del Proyecto
 3. Introducción
 4. Contexto del Proyecto
-5. Alcance del MVP
+5. Alcance del MVP 
 ────────────────────────
 # Parte II - Arquitectura 
 ────────────────────────
@@ -36,21 +36,22 @@
 ────────────────────────
 # Parte III - Componentes del Sistema
 ────────────────────────
-7. Componente Backend
-8. Componente Ciencia de Datos
-9. Infraestructura (OCI)
+7. Componente Backend 
+8. Componente Ciencia de Datos 
+9. Infraestructura (OCI) 
 ────────────────────────
-# Parte IV - Integración
+# Parte IV - Integración 
 ────────────────────────
-10. Integración Backend ↔ Ciencia de Datos
+10. Integración Backend ↔ Ciencia de Datos 
 ────────────────────────
-# Parte V - Gestión del Proyecto
+# Parte V - Gestión del Proyecto 
 ────────────────────────
-11. Evolución del MVP
-12. Riesgos
-13. Referencias y Anexos
-14. Aprobación del Documento
+11. Evolución del MVP 
+12. Riesgos 
+13. Referencias y Anexos 
+14. Aprobación del Documento 
 
+****************************
 
 ---
 # Parte I - Fundamentos

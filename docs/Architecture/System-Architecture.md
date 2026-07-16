@@ -55,9 +55,6 @@ El sistema está compuesto por cuatro componentes principales.
 ```mermaid
 flowchart LR
 
-```mermaid
-flowchart LR
-
     client["Cliente"]
 
     backend["Backend FastAPI"]
