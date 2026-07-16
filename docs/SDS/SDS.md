@@ -23,7 +23,9 @@
 # Tabla de Contenido
 
 # Parte I - Fundamentos
+
 ────────────────────────
+
 1. Información General
 2. Filosofía del Proyecto
 3. Introducción
@@ -31,25 +33,45 @@
 5. Alcance del MVP 
 ────────────────────────
 # Parte II - Arquitectura 
+
 ────────────────────────
+
 6. Arquitectura General
+
 ────────────────────────
+
 # Parte III - Componentes del Sistema
+
 ────────────────────────
+
 7. Componente Backend 
+
 8. Componente Ciencia de Datos 
+
 9. Infraestructura (OCI) 
+
 ────────────────────────
+
 # Parte IV - Integración 
+
 ────────────────────────
+
 10. Integración Backend ↔ Ciencia de Datos 
+
 ────────────────────────
+
 # Parte V - Gestión del Proyecto 
+
 ────────────────────────
+
 11. Evolución del MVP 
+
 12. Riesgos 
+
 13. Referencias y Anexos 
+
 14. Aprobación del Documento 
+
 
 ****************************
 
