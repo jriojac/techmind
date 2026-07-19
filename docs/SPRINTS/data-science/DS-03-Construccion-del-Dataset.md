@@ -19,26 +19,28 @@ Este dataset constituirá la fuente oficial de datos para las etapas posteriores
 
 # Objetivo General
 
-Construir un Dataset Maestro unificado, reproducible y documentado a partir de las fuentes de datos aprobadas en DS-02.
-
-El proceso deberá garantizar la trazabilidad de cada fuente, mantener la integridad de los datos originales y facilitar futuras actualizaciones del conjunto de datos.
+Construir la **Base de Conocimiento TechMind** mediante un pipeline reproducible que integre múltiples fuentes de datos y genere un Dataset Maestro unificado para las siguientes etapas del componente de Ciencia de Datos.
 
 ---
 
-# Objetivos Específicos
+## Objetivos Específicos
 
 Durante este sprint se realizarán las siguientes actividades:
 
-- Descargar los datasets aprobados.
-- Verificar las licencias de uso.
-- Organizar las fuentes originales dentro del repositorio.
-- Registrar el inventario de datasets.
-- Normalizar la estructura de cada fuente.
-- Integrar todas las fuentes en un esquema común.
-- Construir el Dataset Maestro.
-- Ejecutar validaciones iniciales.
-- Generar artefactos descriptivos.
-- Documentar completamente el proceso.
+- Organizar las fuentes de datos.
+- Implementar los loaders.
+- Validar la estructura de cada fuente.
+- Definir el Canonical Schema.
+- Integrar todas las fuentes.
+- Construir la Base de Conocimiento TechMind.
+- Exportar el Dataset Maestro.
+- Documentar el proceso.
+
+## Referencia de Arquitectura
+
+La arquitectura del pipeline utilizada durante este sprint se encuentra documentada en:
+
+- `docs/architecture/DataScience-Pipeline.md`
 
 ---
 
@@ -81,28 +83,25 @@ Todas estas condiciones ya se cumplen.
 
 ---
 
-# Entregables
+## Entregables
 
-Al finalizar el sprint deberán existir los siguientes artefactos:
+### Documentación
 
-```text
-datasets/
+- DS-03 actualizado.
+- DataScience-Pipeline.md.
 
-├── raw/
-│
-├── processed/
-│
-├── reports/
-│
-└── inventory.md
-```
+### Implementación
 
-Además:
+- schema.py
+- loaders.py
+- validator.py
+- integrator.py
+- builder.py
 
+### Datos
+
+- Base de Conocimiento TechMind.
 - Dataset Maestro.
-- Reportes iniciales.
-- Documentación del Sprint.
-- Commits listos para integración.
 
 ---
 
@@ -278,20 +277,21 @@ Validacion_Final --> Persistencia_Dataset
 datasets/
 
 ├── raw/
-│   ├── stackoverflow/
-│   ├── github/
-│   ├── bug_reports/
-│   └── ...
-│
-├── intermediate/
-│
-├── processed/
-│   └── master_dataset.csv
-│
-├── reports/
-│
-└── inventory.md
+├── external/
+├── interim/
+└── processed/
 ```
+
+---
+# Componentes del Pipeline
+
+| Archivo | Responsabilidad |
+|----------|-----------------|
+| schema.py | Definir el Canonical Schema |
+| loaders.py | Cargar las fuentes de datos |
+| validator.py | Validar la estructura |
+| integrator.py | Integrar los DataFrames |
+| builder.py | Ejecutar el pipeline completo |
 
 ---
 

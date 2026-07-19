@@ -1,0 +1,7 @@
+[
+  "tests/data_science/test_readers/test_base_reader.py::test_base_reader_cannot_be_instantiated",
+  "tests/data_science/test_readers/test_text_reader.py::test_read_empty_text_file",
+  "tests/data_science/test_readers/test_text_reader.py::test_read_non_existing_file",
+  "tests/data_science/test_readers/test_text_reader.py::test_read_returns_string",
+  "tests/data_science/test_readers/test_text_reader.py::test_read_valid_text_file"
+]
