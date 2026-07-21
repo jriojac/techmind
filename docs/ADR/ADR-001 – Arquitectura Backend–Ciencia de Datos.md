@@ -2,9 +2,9 @@
 
 ## Nombre del Documento
 
-Versión: 0.1
+Versión: 1.1
 
-Estado: Draft
+Estado: Aceptado
 
 Última actualización: Julio 2026
 
@@ -151,10 +151,10 @@ Cualquier modificación a esta decisión deberá evaluarse cuidadosamente, ya qu
 
 # 8. Referencias
 
-- SDS v0.1 – Capítulo 6. Arquitectura General.
-- SDS v0.1 – Capítulo 7. Componente Backend.
-- SDS v0.1 – Capítulo 8. Componente Ciencia de Datos.
-- SDS v0.1 – Capítulo 10. Integración Backend ↔ Ciencia de Datos.
+- SDS v1.1 – Capítulo 6. Arquitectura General.
+- SDS v1.1 – Capítulo 7. Componente Backend.
+- SDS v1.1 – Capítulo 8. Componente Ciencia de Datos.
+- SDS v1.1 – Capítulo 10. Integración Backend ↔ Ciencia de Datos.
 
 ---
 

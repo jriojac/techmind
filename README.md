@@ -1,6 +1,6 @@
 # 🚀 TechMind – Organización Inteligente del Conocimiento Técnico
 
-> Plataforma inteligente para la organización, clasificación y consulta de documentación técnica mediante Inteligencia Artificial y Machine Learning.
+> TechMind es una plataforma inteligente diseñada para organizar, clasificar y facilitar el acceso al conocimiento técnico mediante técnicas de Machine Learning. El proyecto integra un componente Backend y un componente de Ciencia de Datos para construir un sistema escalable, modular y preparado para evolucionar hacia capacidades avanzadas de búsqueda y recomendación de información técnica.
 
 Desarrollado por el equipo **G9 – LATAM Team 16** para el **Hackathon Oracle Next Education (ONE)**.
 
@@ -8,14 +8,15 @@ Desarrollado por el equipo **G9 – LATAM Team 16** para el **Hackathon Oracle N
 
 # Estado del Proyecto
 
-| Elemento | Estado |
-|----------|:------:|
-| Versión | MVP |
-| Estado General | 🚧 En desarrollo |
-| Arquitectura | ✅ Aprobada |
-| Backend | 🚧 En desarrollo |
-| Ciencia de Datos | 🚧 En desarrollo |
-| Licencia | MIT |
+| Componente            | Estado |
+| --------------------- | :----: |
+| Arquitectura          |    ✅   |
+| Documentación técnica |    ✅   |
+| Backend               |   🚧   |
+| Ciencia de Datos      |   🚧   |
+| Infraestructura       |    ⏳   |
+| Despliegue            |    ⏳   |
+
 
 # Descripción
 
@@ -149,7 +150,7 @@ La estructura detallada del proyecto se encuentra documentada en:
 ## Clonar el repositorio
 
 ```bash
-git clone <URL_DEL_REPOSITORIO>
+git clone <https://github.com/No-Country-simulation/g9-latam-team16-techmindO>
 ```
 
 ## Ingresar al proyecto
@@ -238,13 +239,35 @@ La documentación del proyecto está organizada para facilitar la navegación y 
 
 ## Ciencia de Datos
 
-- ✅ DS-01 – Arquitectura
-- ✅ DS-02 – Readers
-- ✅ DS-03 – Construcción del Dataset
-- ⏳ DS-04 – Preprocesamiento
-- ⏳ DS-05 – Entrenamiento del Modelo
-- ⏳ DS-06 – Evaluación
-- ⏳ DS-07 – Integración con Backend
+| Sprint | Objetivo                                            |
+| ------ | --------------------------------------------------- |
+| DS-01  | ✅ Arquitectura del Componente de Ciencia de Datos     |
+| DS-02  | ✅ Investigación y selección de fuentes de información |
+| DS-03  | ✅ Construcción e integración del Dataset Maestro      |
+| DS-04  | ⏳ Limpieza, validación y preprocesamiento del Dataset |
+| DS-05  | ⏳ Análisis Exploratorio de Datos (EDA)                |
+| DS-06  | ⏳ Ingeniería de Características                       |
+| DS-07  | ⏳ Entrenamiento del Modelo                            |
+| DS-08  | ⏳ Evaluación y Optimización                           |
+| DS-09  | ⏳ Persistencia y Versionado del Modelo                |
+| DS-10  | ⏳ Motor de Inferencia                                 |
+| DS-11  | ⏳ Integración con Backend                             |
+| DS-12  | ⏳ Pruebas y Validación                                |
+| DS-13  | ⏳ Hardening y Optimización                            |
+| DS-14  | ⏳ Cierre del Componente de Ciencia de Datos           |
+
+
+
+## Características
+
+- Clasificación automática de documentación técnica.
+- Construcción de un Dataset Maestro a partir de múltiples fuentes.
+- Pipeline de validación y preprocesamiento.
+- Arquitectura modular Backend + Ciencia de Datos.
+- Integración mediante una interfaz estable (`predict(title, text)`).
+- Documentación técnica basada en SDS y ADR.
+- Infraestructura preparada para Oracle Cloud Infrastructure (OCI).
+
 
 # Contribución
 
