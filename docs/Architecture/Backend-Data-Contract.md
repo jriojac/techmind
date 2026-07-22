@@ -1,20 +1,19 @@
-# Backend-Data-Contract.md
-
-**Proyecto:** AyniKortex  
-**Documento:** Contrato de Integración Backend – Data Science  
-**Versión:** 0.1 (Draft)  
-**Estado:** En revisión  
-**Responsable:** Equipo Data Science  
-**Consumidor:** Equipo Backend  
-**Última actualización:** 21/07/2026
+| Proyecto | AyniKortex |
+|-----------|------------|
+| Documento | Backend-Data-Contract |
+| Versión | 2.0 |
+| Estado | En Diseño |
+| Responsable | Equipo Data Science |
+| Consumidor | Equipo Backend |
 
 ---
 
-# Historial de Cambios
+# Control de Cambios
 
 | Versión | Fecha | Autor | Descripción |
-|----------|------|--------|-------------|
-| 0.1 | 21/07/2026 | Equipo Data Science | Creación inicial del documento. |
+|----------|-------|--------|-------------|
+| 1.0 | 2026-07-21 | Equipo Data Science | Versión inicial del contrato de integración entre Backend y Data Science. |
+| 2.0 | 2026-07-22 | Equipo Data Science | Actualización del contrato para la arquitectura basada en API REST (FastAPI), incorporación de clasificación documental y extracción de palabras clave como funcionalidades principales del MVP. |
 
 ---
 
@@ -25,61 +24,74 @@
 3. Alcance
 4. Referencias
 5. Arquitectura de Integración
-6. Principios del Contrato
-7. Distribución de Responsabilidades
-8. Operaciones del Componente
-9. Flujo General de Integración
+6. Modelo de Colaboración entre Componentes
+7. API REST del Componente Data Science
+8. Flujo General de Integración
+9. Responsabilidades
 10. Reglas Generales
 11. Manejo de Errores
 12. Compatibilidad y Versionado
-13. Consideraciones Futuras
+13. Funcionalidades Fuera del Alcance del MVP
+14. Anexos
 
 ---
 
 # 1. Introducción
 
-El presente documento define el **Contrato de Integración** entre los componentes **Backend** y **Data Science** del proyecto **AyniKortex**.
+Este documento define el **Contrato de Integración** entre los componentes **Backend** y **Data Science** del proyecto **AyniKortex**.
 
-Su propósito es establecer un acuerdo funcional que permita la comunicación entre ambos componentes mediante un conjunto de operaciones claramente definidas, manteniendo un bajo acoplamiento y permitiendo que cada equipo evolucione su implementación interna de manera independiente.
+Su propósito es establecer las reglas funcionales y técnicas que regirán la comunicación entre ambos componentes mediante una **API REST desarrollada en FastAPI**, permitiendo que cada equipo implemente y evolucione su solución de manera independiente sin afectar la interoperabilidad del sistema.
 
-Este documento constituye la referencia oficial para el desarrollo de la integración entre ambos equipos.
+El contrato especifica las capacidades expuestas por el componente Data Science, las estructuras de intercambio de información y las responsabilidades asociadas a cada componente durante el proceso de integración.
 
 > [!IMPORTANT]
-> Este documento describe únicamente el comportamiento esperado del componente de Data Science y las reglas de interacción con Backend. No documenta algoritmos de Machine Learning, arquitectura interna, ni detalles de implementación.
+>
+> Este documento describe exclusivamente el contrato de integración entre Backend y Data Science.
+>
+> No documenta la implementación interna del modelo de Machine Learning, los algoritmos de clasificación, las técnicas de preprocesamiento ni los detalles de entrenamiento del modelo.
 
 ---
 
 # 2. Objetivo
 
-Definir un contrato funcional estable entre Backend y Data Science que permita:
+Definir un contrato de integración estable entre los componentes **Backend** y **Data Science** que permita:
 
-- Desarrollar ambos componentes de forma paralela.
+- Establecer una interfaz única de comunicación mediante API REST.
+- Permitir el desarrollo paralelo entre ambos equipos.
 - Reducir el acoplamiento entre tecnologías.
-- Establecer responsabilidades claras entre equipos.
-- Facilitar el mantenimiento y evolución del sistema.
-- Garantizar la compatibilidad durante todo el ciclo de vida del proyecto.
+- Definir claramente las responsabilidades de cada componente.
+- Garantizar la compatibilidad entre versiones del servicio.
+- Facilitar la integración con el Frontend y futuras extensiones del sistema.
 
 ---
 
 # 3. Alcance
 
-Este documento define:
+El presente documento define:
 
-- Las operaciones ofrecidas por el componente Data Science.
+- La arquitectura de integración entre Backend y Data Science.
 - Las responsabilidades de cada componente.
-- Las reglas generales de interacción.
-- Los contratos funcionales de entrada y salida.
-- El manejo de errores funcionales.
-- Las políticas de versionado del contrato.
+- Los endpoints expuestos por la API de Data Science.
+- Las reglas generales de comunicación.
+- Los contratos de entrada y salida de cada operación.
+- Las políticas de validación y manejo de errores.
+- Las reglas de compatibilidad y versionado.
 
-Este documento **no incluye**:
+Para la versión **MVP**, el componente Data Science ofrecerá las siguientes capacidades:
 
-- Diseño interno del pipeline de Machine Learning.
-- Arquitectura interna del componente Data Science.
-- Algoritmos de clasificación.
-- Estrategias de entrenamiento.
-- Modelos de datos internos del pipeline.
-- Tecnologías específicas de implementación.
+- Clasificación de documentos técnicos.
+- Clasificación de texto libre.
+- Extracción de palabras clave.
+- Consulta del estado del servicio (Health Check).
+
+Las siguientes funcionalidades quedan fuera del alcance del MVP y podrán incorporarse en versiones posteriores:
+
+- Búsqueda semántica.
+- Chat sobre documentos.
+- Recuperación aumentada de información (RAG).
+- Recomendación de contenido.
+- Similitud documental.
+- Procesamiento asíncrono.
 
 ---
 
@@ -87,30 +99,33 @@ Este documento **no incluye**:
 
 | Documento | Descripción |
 |-----------|-------------|
-| Software Design Specification (SDS) | Arquitectura general del sistema |
-| ADR - Arquitectura | Decisiones arquitectónicas aprobadas |
-| Backend-Data-Model.md | Modelos de intercambio entre Backend y Data Science |
-| Engineering Standards | Estándares de desarrollo del proyecto |
+| Software Design Specification (SDS) | Arquitectura general del sistema. |
+| Architecture Decision Record (ADR) | Decisiones arquitectónicas aprobadas. |
+| Backend-Data-Model.md | Modelos de intercambio entre Backend y Data Science. |
+| Engineering Standards | Estándares de desarrollo del proyecto. |
+| Bases del Hackathon TechMind | Requisitos funcionales del MVP y criterios de evaluación. |
 
+---
 
 # 5. Arquitectura de Integración
 
 ## 5.1 Visión General
 
-El sistema **AyniKortex** está compuesto por componentes especializados que colaboran mediante responsabilidades claramente definidas.
+La solución **AyniKortex** adopta una arquitectura desacoplada basada en servicios, donde cada componente mantiene responsabilidades claramente definidas y se comunica mediante interfaces bien establecidas.
 
-El componente **Backend** actúa como el orquestador de la aplicación, administrando el flujo funcional, la autenticación, la gestión de usuarios y la comunicación con los diferentes servicios del sistema.
+El componente **Backend**, desarrollado en **Java con Spring Boot**, actúa como el orquestador principal de la aplicación. Es responsable de la lógica de negocio, la autenticación, la gestión de usuarios, la persistencia de la información y la exposición de la API principal consumida por el Frontend.
 
-El componente **Data Science** es responsable del ciclo completo de procesamiento del conocimiento, incluyendo la incorporación de documentos, el procesamiento de información, la administración de la Base de Conocimiento y la generación de respuestas inteligentes.
+El componente **Data Science**, desarrollado en **Python con FastAPI**, encapsula todas las capacidades relacionadas con el procesamiento de documentos, el preprocesamiento de texto, la ejecución del modelo de Machine Learning y la generación de los resultados de clasificación.
 
-Ambos componentes interactúan exclusivamente mediante el **Contrato de Integración**, el cual constituye la única interfaz funcional autorizada entre ambos equipos.
+La comunicación entre ambos componentes se realizará exclusivamente mediante solicitudes **HTTP REST**, utilizando estructuras de datos definidas en el documento **Backend-Data-Model.md**.
 
 > [!IMPORTANT]
-> Backend no conoce la implementación interna del componente Data Science.
 >
-> Data Science no conoce la lógica de negocio implementada por Backend.
+> Backend no accede directamente al modelo de Machine Learning ni al pipeline de procesamiento.
 >
-> Ambos componentes evolucionan de manera independiente respetando el Contrato de Integración.
+> Data Science no implementa lógica de negocio, autenticación, persistencia ni gestión de usuarios.
+>
+> Toda interacción entre ambos componentes deberá realizarse únicamente mediante la API REST definida en este contrato.
 
 ---
 
@@ -119,88 +134,126 @@ Ambos componentes interactúan exclusivamente mediante el **Contrato de Integrac
 ```mermaid
 flowchart LR
 
+    Usuario["Usuario"]
+
     Frontend["Frontend"]
 
-    Backend["Backend"]
+    Backend["Backend<br/>Spring Boot"]
 
-    Storage["Almacenamiento de Documentos"]
+    Api["API Data Science<br/>FastAPI"]
 
-    Contrato["Contrato de Integración"]
+    Modelo["Modelo Machine Learning"]
 
-    DataScience["Componente Data Science"]
-
-    KnowledgeBase["Base de Conocimiento"]
+    Usuario --> Frontend
 
     Frontend --> Backend
 
-    Backend --> Storage
+    Backend --> Api
 
-    Backend --> Contrato
-
-    Contrato --> DataScience
-
-    DataScience --> Storage
-
-    DataScience --> KnowledgeBase
+    Api --> Modelo
 ```
-
 
 ---
 
-## 5.3 Principios de Integración
+## 5.3 Flujo General de Comunicación
 
-La comunicación entre Backend y Data Science se rige por los siguientes principios arquitectónicos.
+El siguiente diagrama describe el flujo general de procesamiento para una solicitud de clasificación documental.
+
+```mermaid
+sequenceDiagram
+
+    participant Usuario
+
+    participant Frontend
+
+    participant Backend
+
+    participant Api as API Data Science
+
+    participant Modelo as Modelo Machine Learning
+
+    Usuario->>Frontend: Selecciona documento o ingresa texto
+
+    Frontend->>Backend: Envía solicitud
+
+    Backend->>Api: Solicita clasificación
+
+    Api->>Modelo: Ejecuta inferencia
+
+    Modelo-->>Api: Resultado de clasificación
+
+    Api-->>Backend: Respuesta JSON
+
+    Backend-->>Frontend: Resultado para el usuario
+```
+
+---
+
+## 5.4 Principios de Integración
+
+La integración entre Backend y Data Science se basa en los siguientes principios arquitectónicos.
 
 ### Desacoplamiento
 
-Backend y Data Science deben evolucionar de manera independiente.
+Backend y Data Science evolucionan de forma independiente.
 
-Los cambios internos realizados por cualquiera de los componentes no deberán afectar al otro mientras el Contrato de Integración permanezca compatible.
+Los cambios internos realizados en cualquiera de los componentes no deberán afectar al otro siempre que se mantenga la compatibilidad del contrato de integración.
 
 ---
 
 ### Responsabilidad Única
 
-Cada componente es responsable únicamente de su dominio funcional.
+Cada componente implementa únicamente las capacidades correspondientes a su dominio funcional.
 
-Backend administra la lógica de negocio de la aplicación.
+Backend administra la aplicación y el flujo de negocio.
 
-Data Science administra el conocimiento técnico del sistema.
+Data Science administra el procesamiento inteligente de la información.
 
 ---
 
-### Independencia Tecnológica
+### Comunicación mediante API REST
 
-El Contrato de Integración es independiente de la tecnología utilizada para implementar la comunicación.
+La comunicación entre ambos componentes se realizará mediante solicitudes HTTP REST.
 
-La implementación podrá realizarse mediante REST, gRPC, mensajería u otro mecanismo equivalente sin modificar el comportamiento funcional descrito en este documento.
+Todas las operaciones deberán intercambiar información utilizando estructuras JSON definidas en el documento **Backend-Data-Model.md**.
 
 ---
 
 ### Encapsulamiento
 
-Backend nunca accede directamente a:
+Backend desconoce completamente la implementación interna del componente Data Science.
 
-- modelos de Machine Learning
-- embeddings
-- pipelines
-- algoritmos
-- estructuras internas de Data Science
+No accede directamente a:
 
-De la misma forma, Data Science no administra:
+- Modelos de Machine Learning.
+- Algoritmos de clasificación.
+- Pipeline de preprocesamiento.
+- Técnicas de extracción de características.
+- Modelos serializados.
+- Bibliotecas utilizadas durante la inferencia.
 
-- usuarios
-- autenticación
-- autorización
-- proyectos
-- reglas de negocio
+De igual forma, Data Science no administra:
+
+- Usuarios.
+- Autenticación.
+- Autorización.
+- Persistencia.
+- Reglas de negocio.
+- Gestión de proyectos.
+
+---
+
+### Escalabilidad
+
+La separación entre Backend y Data Science permitirá evolucionar el modelo de Machine Learning, incorporar nuevas versiones del servicio o reemplazar la implementación interna sin afectar al resto del sistema, siempre que se mantenga el contrato definido en este documento.
 
 ---
 
 ### Compatibilidad
 
-Toda modificación que afecte el Contrato de Integración deberá mantener compatibilidad con las versiones soportadas o generar una nueva versión del contrato.
+Toda modificación realizada sobre la API deberá preservar la compatibilidad con las versiones soportadas.
 
+Los cambios incompatibles requerirán una nueva versión mayor del contrato de integración.
 
 ---
 
@@ -208,17 +261,19 @@ Toda modificación que afecte el Contrato de Integración deberá mantener compa
 
 ## 6.1 Propósito
 
-El objetivo del Modelo de Colaboración es establecer una separación clara de responsabilidades entre los componentes **Backend** y **Data Science**, evitando duplicidad de funciones y reduciendo el acoplamiento entre ambos equipos.
+El Modelo de Colaboración define la distribución de responsabilidades entre los componentes **Backend** y **Data Science**, estableciendo los límites funcionales de cada uno y el mecanismo oficial de comunicación entre ambos.
 
-Cada componente es responsable exclusivamente de las capacidades asociadas a su dominio funcional.
+El objetivo es garantizar que cada equipo pueda desarrollar su componente de manera independiente, reduciendo el acoplamiento y evitando la duplicidad de responsabilidades.
 
-Esta distribución permite que ambos equipos desarrollen, prueben y evolucionen sus componentes de forma independiente, manteniendo como único punto de contacto el Contrato de Integración.
+La comunicación entre ambos componentes se realizará exclusivamente mediante la **API REST del componente Data Science**, consumida por el Backend mediante solicitudes HTTP.
 
 ---
 
 ## 6.2 Responsabilidades del Backend
 
-El componente Backend actúa como el orquestador principal de la aplicación y es responsable de administrar el flujo funcional del sistema.
+El componente **Backend**, implementado en **Java con Spring Boot**, actúa como el orquestador principal de la aplicación.
+
+Es responsable de administrar el flujo funcional del sistema y de coordinar la interacción entre el Frontend y el componente Data Science.
 
 Entre sus responsabilidades se encuentran:
 
@@ -226,36 +281,48 @@ Entre sus responsabilidades se encuentran:
 - Autenticación y autorización.
 - Administración de proyectos.
 - Recepción de solicitudes del Frontend.
-- Administración del almacenamiento físico de los documentos.
+- Recepción de documentos.
+- Almacenamiento de archivos.
 - Validación funcional de las solicitudes.
-- Invocación del componente Data Science.
-- Administración de auditoría y trazabilidad.
+- Consumo de la API REST de Data Science.
+- Persistencia de los resultados de clasificación.
 - Presentación de resultados al usuario.
+- Auditoría y trazabilidad.
 
 > [!NOTE]
-> Backend no ejecuta procesos de análisis documental, clasificación, indexación ni recuperación de conocimiento.
+>
+> Backend no ejecuta procesos de Machine Learning, preprocesamiento de texto, clasificación documental ni extracción de palabras clave.
 
 ---
 
 ## 6.3 Responsabilidades del Componente Data Science
 
-El componente Data Science administra el ciclo completo del conocimiento técnico del sistema.
+El componente **Data Science**, implementado en **Python con FastAPI**, es responsable de ejecutar el procesamiento inteligente de la información.
 
 Entre sus responsabilidades se encuentran:
 
-- Validación técnica del documento recibido.
-- Extracción de contenido.
-- Normalización del texto.
-- Preprocesamiento documental.
-- Clasificación automática.
-- Generación de representaciones semánticas.
-- Administración de la Base de Conocimiento.
-- Recuperación de contexto.
-- Generación de respuestas.
-- Administración del ciclo de vida del conocimiento.
+- Recepción de solicitudes provenientes del Backend.
+- Validación técnica de los datos recibidos.
+- Lectura y procesamiento de documentos soportados.
+- Procesamiento de texto libre.
+- Limpieza y normalización del contenido.
+- Ejecución del pipeline de inferencia.
+- Clasificación automática del contenido.
+- Extracción de palabras clave.
+- Cálculo de la probabilidad de clasificación.
+- Generación de la respuesta JSON.
+- Exposición de la API REST.
+
+La entrega del componente incluirá:
+
+- Modelo entrenado y serializado.
+- Pipeline de inferencia.
+- API REST desarrollada en FastAPI.
+- Documentación del contrato de integración.
 
 > [!NOTE]
-> Data Science no administra usuarios, autenticación, proyectos ni reglas de negocio de la aplicación.
+>
+> Data Science no administra usuarios, autenticación, autorización, almacenamiento de documentos, persistencia de datos ni reglas de negocio de la aplicación.
 
 ---
 
@@ -263,507 +330,1206 @@ Entre sus responsabilidades se encuentran:
 
 | Funcionalidad | Backend | Data Science |
 |---------------|:-------:|:------------:|
-| Autenticación | ✅ | ❌ |
-| Autorización | ✅ | ❌ |
 | Gestión de usuarios | ✅ | ❌ |
+| Autenticación | ✅ | ❌ |
 | Gestión de proyectos | ✅ | ❌ |
-| Recepción del documento | ✅ | ❌ |
-| Almacenamiento físico del documento | ✅ | ❌ |
-| Validación funcional de la solicitud | ✅ | ❌ |
-| Validación técnica del documento | ❌ | ✅ |
-| Extracción de contenido | ❌ | ✅ |
+| Recepción de solicitudes | ✅ | ❌ |
+| Recepción de archivos | ✅ | ❌ |
+| Almacenamiento de documentos | ✅ | ❌ |
+| Validación funcional | ✅ | ❌ |
+| Consumo de API REST | ✅ | ❌ |
+| Lectura de documentos | ❌ | ✅ |
+| Procesamiento de PDF | ❌ | ✅ |
+| Procesamiento de DOCX | ❌ | ✅ |
+| Procesamiento de TXT | ❌ | ✅ |
+| Procesamiento de Markdown | ❌ | ✅ |
+| Procesamiento de texto libre | ❌ | ✅ |
 | Limpieza y normalización | ❌ | ✅ |
 | Clasificación documental | ❌ | ✅ |
-| Generación de embeddings | ❌ | ✅ |
-| Administración de la Base de Conocimiento | ❌ | ✅ |
-| Recuperación de contexto | ❌ | ✅ |
-| Generación de respuestas | ❌ | ✅ |
-| Presentación de resultados | ✅ | ❌ |
-| Auditoría | ✅ | ❌ |
+| Extracción de palabras clave | ❌ | ✅ |
+| Cálculo de probabilidad | ❌ | ✅ |
+| Generación de respuesta JSON | ❌ | ✅ |
+| Persistencia del resultado | ✅ | ❌ |
+| Presentación al usuario | ✅ | ❌ |
 
 ---
 
-## 6.5 Límites de Responsabilidad
+## 6.5 Modelo de Comunicación
 
-Para garantizar una correcta separación de responsabilidades, se establecen las siguientes restricciones:
+La interacción entre Backend y Data Science seguirá el siguiente flujo de colaboración.
 
-### Backend nunca deberá:
+```mermaid
+flowchart LR
 
-- Acceder directamente a la Base de Conocimiento.
-- Ejecutar algoritmos de Machine Learning.
-- Administrar embeddings.
-- Procesar documentos.
-- Modificar el pipeline de Data Science.
+    Frontend["Frontend"]
 
-### Data Science nunca deberá:
+    Backend["Backend"]
 
-- Administrar usuarios.
-- Gestionar autenticación.
-- Gestionar autorización.
-- Administrar proyectos.
-- Implementar reglas de negocio de la aplicación.
-- Exponer información de infraestructura al usuario final.
+    Documentos["Almacenamiento de Documentos"]
 
-> [!IMPORTANT]
-> Toda interacción entre ambos componentes deberá realizarse exclusivamente mediante las operaciones definidas en este Contrato de Integración.
+    Api["API Data Science"]
+
+    Modelo["Modelo Machine Learning"]
+
+    Frontend --> Backend
+
+    Backend --> Documentos
+
+    Backend --> Api
+
+    Api --> Modelo
+
+    Modelo --> Api
+
+    Api --> Backend
+```
 
 ---
 
-# 7. Capacidades del Componente Data Science
+## 6.6 Principios de Colaboración
 
-## 7.1 Visión General
+Para garantizar una integración consistente entre ambos componentes se establecen los siguientes principios.
 
-El componente **Data Science** expone un conjunto de capacidades funcionales que permiten incorporar conocimiento técnico y responder consultas sobre la Base de Conocimiento.
+### Separación de responsabilidades
 
-Cada capacidad representa una funcionalidad de negocio independiente de la tecnología utilizada para su implementación.
+Cada componente implementa únicamente las responsabilidades correspondientes a su dominio funcional.
 
-Las capacidades descritas en esta sección constituyen la única interfaz funcional soportada por el componente Data Science.
+No deberá existir duplicidad de lógica entre Backend y Data Science.
+
+---
+
+### Comunicación desacoplada
+
+Backend nunca accederá directamente al modelo de Machine Learning.
+
+Toda interacción deberá realizarse mediante la API REST definida en este contrato.
+
+---
+
+### Independencia tecnológica
+
+Backend y Data Science podrán evolucionar de forma independiente siempre que mantengan la compatibilidad del contrato de integración.
+
+---
+
+### Reutilización
+
+El componente Data Science podrá ser consumido por otros clientes o servicios distintos al Backend, siempre que respeten el contrato definido en este documento.
+
+---
+
+### Escalabilidad
+
+La arquitectura permitirá incorporar nuevas capacidades del componente Data Science mediante nuevos endpoints sin afectar la compatibilidad de las operaciones existentes.
+
+---
+
+## 6.7 Funcionalidades del MVP
+
+Para la versión MVP del proyecto, el componente Data Science ofrecerá únicamente las siguientes capacidades:
+
+- Clasificación de documentos.
+- Clasificación de texto libre.
+- Extracción de palabras clave.
+- Consulta del estado del servicio.
+
+Estas capacidades constituyen el alcance oficial del MVP y serán las únicas garantizadas por la versión 2.0 del contrato.
+
+---
+
+## 6.8 Funcionalidades Futuras
+
+Las siguientes capacidades quedan fuera del alcance del MVP y podrán incorporarse en versiones posteriores:
+
+- Chat sobre documentos.
+- Búsqueda semántica.
+- Recuperación aumentada de información (RAG).
+- Recomendación de documentos.
+- Similitud documental.
+- Clasificación multietiqueta.
+- Reentrenamiento automático del modelo.
+
+La incorporación de estas funcionalidades deberá realizarse mediante nuevos endpoints y manteniendo la compatibilidad con las versiones anteriores del contrato.
+
+---
+
+# 7. API REST del Componente Data Science
+
+## 7.1 Objetivo
+
+El componente **Data Science** expondrá una API REST que permitirá al componente **Backend** acceder a las capacidades de clasificación documental del sistema.
+
+La API constituye el único mecanismo oficial de comunicación entre ambos componentes y encapsula completamente la lógica de Machine Learning, el pipeline de preprocesamiento y el modelo de inferencia.
+
+Todas las solicitudes y respuestas deberán cumplir los modelos definidos en el documento **Backend-Data-Model.md**.
 
 > [!IMPORTANT]
-> El Contrato de Integración describe capacidades funcionales, no mecanismos de comunicación.
 >
-> La implementación podrá realizarse mediante REST, gRPC, mensajería o cualquier otro mecanismo equivalente sin modificar el presente contrato.
+> Backend nunca accederá directamente al modelo de Machine Learning.
+>
+> Toda interacción deberá realizarse mediante los endpoints definidos en este capítulo.
 
 ---
 
-## 7.2 Capacidad: Incorporar Documento
+## 7.2 Endpoints Disponibles
 
-### Descripción
-
-Permite incorporar un documento técnico a la Base de Conocimiento para que pueda ser utilizado posteriormente durante los procesos de recuperación de información y generación de respuestas.
-
-Durante esta capacidad, el componente Data Science ejecuta todas las actividades necesarias para transformar un documento en conocimiento disponible para consulta.
-
-### Objetivo
-
-Procesar un documento recibido desde Backend e incorporarlo a la Base de Conocimiento.
-
-### Responsabilidades
-
-Durante esta capacidad, Data Science es responsable de:
-
-- Validar técnicamente el documento.
-- Extraer el contenido.
-- Normalizar la información.
-- Ejecutar el preprocesamiento documental.
-- Clasificar el documento.
-- Generar representaciones semánticas cuando corresponda.
-- Indexar la información.
-- Actualizar la Base de Conocimiento.
-- Registrar el resultado del procesamiento.
-
-### Precondiciones
-
-- El documento debe existir.
-- El documento debe cumplir los formatos soportados.
-- La solicitud debe contener toda la información obligatoria definida en el modelo correspondiente.
-
-### Postcondiciones
-
-Al finalizar la operación:
-
-- El documento habrá sido procesado completamente.
-- La Base de Conocimiento reflejará el nuevo contenido disponible.
-- El resultado del procesamiento será retornado al componente Backend.
-
-### Modelos utilizados
-
-| Modelo | Dirección |
-|---------|-----------|
-| ProcessDocumentRequest | Entrada |
-| ProcessDocumentResponse | Salida |
-
-Los modelos son definidos en el documento **Backend-Data-Model.md**.
+| Método | Endpoint | Descripción |
+|---------|----------|-------------|
+| POST | /api/v1/predict/file | Clasifica un documento enviado como archivo. |
+| POST | /api/v1/predict/text | Clasifica contenido enviado como texto libre. |
+| GET | /api/v1/health | Verifica la disponibilidad del servicio. |
 
 ---
 
-## 7.3 Capacidad: Responder Consulta
+# 7.3 Endpoint de Clasificación por Archivo
 
-### Descripción
+## Objetivo
 
-Permite obtener una respuesta basada en el conocimiento previamente incorporado a la Base de Conocimiento.
+Permitir al Backend enviar un documento para ser procesado y clasificado por el modelo de Machine Learning.
 
-El componente Data Science administra todo el proceso de recuperación de información, construcción de contexto y generación de la respuesta.
+El servicio realizará:
 
-### Objetivo
-
-Responder consultas utilizando exclusivamente la información disponible en la Base de Conocimiento.
-
-### Responsabilidades
-
-Durante esta capacidad, Data Science es responsable de:
-
-- Validar la consulta.
-- Recuperar información relevante.
-- Construir el contexto.
-- Generar la respuesta.
-- Identificar las referencias utilizadas.
-- Retornar el resultado al Backend.
-
-### Precondiciones
-
-- La Base de Conocimiento debe encontrarse disponible.
-- La consulta debe cumplir las reglas definidas por el contrato.
-
-### Postcondiciones
-
-Al finalizar la operación:
-
-- Se generará una respuesta.
-- Se devolverán las referencias utilizadas cuando corresponda.
-- Se informará el estado de la operación.
-
-### Modelos utilizados
-
-| Modelo | Dirección |
-|---------|-----------|
-| AnswerQuestionRequest | Entrada |
-| AnswerQuestionResponse | Salida |
-
-Los modelos son definidos en el documento **Backend-Data-Model.md**.
+- Lectura del documento.
+- Extracción del contenido.
+- Preprocesamiento.
+- Clasificación.
+- Extracción de palabras clave.
+- Cálculo de probabilidad.
 
 ---
 
-# 8. Escenarios de Integración
+## Método
 
-Este capítulo describe los escenarios funcionales de interacción entre los componentes **Backend** y **Data Science**.
-
-Cada escenario representa una capacidad ofrecida por el componente Data Science y define la secuencia general de colaboración entre ambos componentes.
-
-Los modelos de datos utilizados durante estas interacciones se describen en el documento **Backend-Data-Model.md**.
+```text
+POST
+```
 
 ---
 
-## 8.1 Escenario: Incorporación de Documento
+## Endpoint
 
-### Descripción
-
-Este escenario describe el proceso mediante el cual un documento técnico es incorporado a la Base de Conocimiento.
-
-El componente **Backend** administra el ciclo de vida del documento físico, mientras que el componente **Data Science** es responsable del procesamiento documental y de la administración del conocimiento generado.
-
-El procesamiento incluye todas las actividades necesarias para transformar un documento en información disponible para futuras consultas.
+```text
+/api/v1/predict/file
+```
 
 ---
 
-### Flujo de Integración
+## Tipo de contenido
+
+```text
+multipart/form-data
+```
+
+---
+
+## Entrada
+
+El cuerpo de la solicitud deberá cumplir el modelo:
+
+```text
+FileClassificationRequest
+```
+
+Definido en:
+
+```text
+Backend-Data-Model.md
+```
+
+---
+
+## Respuesta Exitosa
+
+La respuesta deberá cumplir el modelo:
+
+```text
+ClassificationResponse
+```
+
+---
+
+## Código HTTP
+
+| Código | Descripción |
+|---------|-------------|
+| 200 | Clasificación realizada correctamente. |
+| 400 | Solicitud inválida. |
+| 415 | Tipo de archivo no soportado. |
+| 422 | No fue posible procesar el documento. |
+| 500 | Error interno del servicio. |
+
+---
+
+## Observaciones
+
+El componente Backend podrá enviar documentos en cualquiera de los formatos soportados por Data Science.
+
+Los formatos admitidos se definen en el documento **Backend-Data-Model.md**.
+
+---
+
+# 7.4 Endpoint de Clasificación por Texto
+
+## Objetivo
+
+Permitir la clasificación de contenido enviado directamente como texto libre.
+
+Este endpoint facilitará:
+
+- Integraciones futuras.
+- Pruebas automatizadas.
+- Validaciones funcionales.
+- Consumo desde aplicaciones externas.
+
+---
+
+## Método
+
+```text
+POST
+```
+
+---
+
+## Endpoint
+
+```text
+/api/v1/predict/text
+```
+
+---
+
+## Tipo de contenido
+
+```text
+application/json
+```
+
+---
+
+## Entrada
+
+La solicitud deberá cumplir el modelo:
+
+```text
+TextClassificationRequest
+```
+
+---
+
+## Respuesta Exitosa
+
+La respuesta deberá cumplir el modelo:
+
+```text
+ClassificationResponse
+```
+
+---
+
+## Código HTTP
+
+| Código | Descripción |
+|---------|-------------|
+| 200 | Clasificación realizada correctamente. |
+| 400 | Solicitud inválida. |
+| 422 | El contenido no pudo procesarse. |
+| 500 | Error interno del servicio. |
+
+---
+
+## Observaciones
+
+El contenido recibido será procesado utilizando el mismo pipeline de inferencia empleado para la clasificación documental.
+
+De esta forma se garantiza consistencia entre ambos mecanismos de entrada.
+
+---
+
+# 7.5 Endpoint de Estado del Servicio
+
+## Objetivo
+
+Permitir verificar la disponibilidad del componente Data Science.
+
+Este endpoint será utilizado por Backend para:
+
+- Health Check.
+- Monitoreo.
+- Diagnóstico.
+- Validaciones durante el despliegue.
+
+---
+
+## Método
+
+```text
+GET
+```
+
+---
+
+## Endpoint
+
+```text
+/api/v1/health
+```
+
+---
+
+## Entrada
+
+No requiere parámetros.
+
+---
+
+## Respuesta Exitosa
+
+La respuesta deberá cumplir el modelo:
+
+```text
+HealthResponse
+```
+
+---
+
+## Código HTTP
+
+| Código | Descripción |
+|---------|-------------|
+| 200 | Servicio disponible. |
+| 503 | Servicio no disponible. |
+
+---
+
+# 7.6 Flujo General de Invocación
 
 ```mermaid
 sequenceDiagram
 
-    participant Usuario
     participant Frontend
+
     participant Backend
-    participant Storage as Almacenamiento de Documentos
-    participant DataScience
-    participant KnowledgeBase as Base de Conocimiento
 
-    Usuario->>Frontend: Selecciona documento
+    participant API
 
-    Frontend->>Backend: Solicita incorporación
+    participant Pipeline
 
-    Backend->>Storage: Almacena documento
+    participant Modelo
 
-    Storage-->>Backend: documentLocation
+    Frontend->>Backend: Solicitud
 
-    Backend->>DataScience: Incorporar Documento
+    Backend->>API: Invoca endpoint
 
-    DataScience->>Storage: Recupera documento
+    API->>Pipeline: Preprocesamiento
 
-    Storage-->>DataScience: Documento
+    Pipeline->>Modelo: Inferencia
 
-    DataScience->>KnowledgeBase: Procesa e incorpora conocimiento
+    Modelo-->>Pipeline: Resultado
 
-    KnowledgeBase-->>DataScience: Confirmación
+    Pipeline-->>API: Clasificación
 
-    DataScience-->>Backend: Resultado del procesamiento
+    API-->>Backend: Respuesta JSON
 
     Backend-->>Frontend: Resultado
 ```
 
 ---
 
-### Información requerida
+# 7.7 Garantías del Servicio
 
-Para ejecutar esta capacidad, Backend deberá proporcionar como mínimo:
+La API REST del componente Data Science garantiza:
 
-| Información | Obligatorio |
-|-------------|-------------|
-| Identificador del documento | Sí |
-| Identificador del proyecto | Sí |
-| Ubicación del documento | Sí |
-| Tipo de documento | Sí |
-
-Los atributos específicos se describen en **Backend-Data-Model.md**.
+- Compatibilidad con el contrato definido en este documento.
+- Respuestas en formato JSON.
+- Independencia de la implementación interna.
+- Consistencia entre los distintos mecanismos de entrada.
+- Versionado de la API mediante el prefijo **/api/v1/**.
 
 ---
 
-### Resultado esperado
+# 7.8 Restricciones
 
-Al finalizar la operación:
+La API no será responsable de:
 
-- El documento habrá sido procesado correctamente.
-- El conocimiento extraído estará disponible para futuras consultas.
-- Backend recibirá el resultado del procesamiento.
+- Gestión de usuarios.
+- Autenticación.
+- Persistencia.
+- Administración de proyectos.
+- Almacenamiento de documentos.
+- Presentación de resultados.
 
----
-
-## 8.2 Escenario: Responder Consulta
-
-### Descripción
-
-Este escenario describe el proceso mediante el cual el componente Data Science responde una consulta utilizando la información disponible en la Base de Conocimiento.
-
-Backend administra la interacción con el usuario, mientras que Data Science ejecuta las tareas de recuperación de contexto y generación de la respuesta.
+Estas responsabilidades pertenecen exclusivamente al componente Backend.
 
 ---
 
-### Flujo de Integración
+# 8. Flujo General de Integración
+
+## 8.1 Objetivo
+
+Este capítulo describe la secuencia de interacción entre los componentes **Backend** y **Data Science** durante la ejecución de cada una de las capacidades expuestas por la API REST.
+
+Su propósito es establecer claramente las responsabilidades de cada componente en cada etapa del procesamiento, facilitando el desarrollo, la integración y las pruebas del sistema.
+
+---
+
+# 8.2 Flujo General
 
 ```mermaid
 sequenceDiagram
 
     participant Usuario
+
     participant Frontend
+
     participant Backend
-    participant DataScience
-    participant KnowledgeBase as Base de Conocimiento
 
-    Usuario->>Frontend: Realiza consulta
+    participant Api as API Data Science
 
-    Frontend->>Backend: Envía consulta
+    participant Modelo
 
-    Backend->>DataScience: Responder Consulta
+    Usuario->>Frontend: Solicita clasificación
 
-    DataScience->>KnowledgeBase: Recupera contexto
+    Frontend->>Backend: Envía solicitud
 
-    KnowledgeBase-->>DataScience: Información relevante
+    Backend->>Api: Invoca endpoint
 
-    DataScience-->>Backend: Respuesta
+    Api->>Modelo: Ejecuta inferencia
 
-    Backend-->>Frontend: Presenta respuesta
+    Modelo-->>Api: Resultado
+
+    Api-->>Backend: Respuesta JSON
+
+    Backend-->>Frontend: Presenta resultado
 ```
 
 ---
 
-### Información requerida
+# 8.3 Flujo de Clasificación por Archivo
 
-Para ejecutar esta capacidad, Backend deberá proporcionar como mínimo:
+## Descripción
 
-| Información | Obligatorio |
-|-------------|-------------|
-| Identificador del proyecto | Sí |
-| Consulta | Sí |
-
-Los atributos específicos se describen en **Backend-Data-Model.md**.
+Este flujo corresponde al procesamiento de documentos enviados por el usuario mediante archivos soportados por el sistema.
 
 ---
 
-### Resultado esperado
+### Secuencia de actividades
 
-Al finalizar la operación:
-
-- Se generará una respuesta basada en la Base de Conocimiento.
-- Se devolverán las referencias utilizadas cuando estén disponibles.
-- Backend recibirá el resultado de la consulta.
-
----
-
-## 8.3 Restricciones Operacionales
-
-Las siguientes restricciones aplican a todos los escenarios definidos en este Contrato de Integración.
-
-| Código | Restricción |
-|---------|-------------|
-| RO-01 | Backend es responsable del almacenamiento físico de los documentos. |
-| RO-02 | Data Science accede a los documentos únicamente mediante la ubicación proporcionada por Backend. |
-| RO-03 | Data Science administra exclusivamente la Base de Conocimiento. |
-| RO-04 | Todo documento deberá pertenecer a un proyecto válido. |
-| RO-05 | El Contrato de Integración es independiente del protocolo de comunicación utilizado. |
-| RO-06 | Los modelos de intercambio se definen en el documento **Backend-Data-Model.md**. |
-| RO-07 | Ningún componente accederá directamente a las estructuras internas del otro componente. |
+| Paso | Backend | Data Science |
+|------|---------|--------------|
+| 1 | Recibe el archivo desde el Frontend. | |
+| 2 | Valida la solicitud y los datos obligatorios. | |
+| 3 | Envía el archivo mediante el endpoint `/api/v1/predict/file`. | |
+| 4 | | Valida el formato del archivo recibido. |
+| 5 | | Extrae el contenido del documento. |
+| 6 | | Ejecuta el preprocesamiento del texto. |
+| 7 | | Ejecuta el modelo de Machine Learning. |
+| 8 | | Calcula la categoría, probabilidad y palabras clave. |
+| 9 | | Genera la respuesta JSON. |
+| 10 | Recibe la respuesta del servicio. | |
+| 11 | Persiste el resultado de clasificación. | |
+| 12 | Devuelve la respuesta al Frontend. | |
 
 ---
 
-### Decisiones Arquitectónicas
+# 8.4 Flujo de Clasificación por Texto
+
+## Descripción
+
+Este flujo permite clasificar contenido enviado directamente como texto libre.
+
+---
+
+### Secuencia de actividades
+
+| Paso | Backend | Data Science |
+|------|---------|--------------|
+| 1 | Recibe el texto desde el Frontend. | |
+| 2 | Valida la solicitud. | |
+| 3 | Envía el contenido mediante `/api/v1/predict/text`. | |
+| 4 | | Valida el contenido recibido. |
+| 5 | | Ejecuta el pipeline de preprocesamiento. |
+| 6 | | Ejecuta la inferencia del modelo. |
+| 7 | | Extrae palabras clave. |
+| 8 | | Calcula la probabilidad de clasificación. |
+| 9 | | Genera la respuesta JSON. |
+| 10 | Recibe la respuesta. | |
+| 11 | Persiste el resultado. | |
+| 12 | Devuelve la información al Frontend. | |
+
+---
+
+# 8.5 Flujo de Verificación del Servicio
+
+## Descripción
+
+Este flujo permite verificar la disponibilidad del componente Data Science.
+
+---
+
+### Secuencia de actividades
+
+| Paso | Backend | Data Science |
+|------|---------|--------------|
+| 1 | Envía una solicitud GET al endpoint `/api/v1/health`. | |
+| 2 | | Verifica el estado del servicio. |
+| 3 | | Genera la respuesta de disponibilidad. |
+| 4 | Recibe el estado del servicio. | |
+| 5 | Registra el resultado cuando corresponda. | |
+
+---
+
+# 8.6 Consideraciones Generales
+
+Durante todos los flujos definidos en este documento se deberán respetar las siguientes reglas:
+
+- Backend es el único responsable de la lógica de negocio.
+- Data Science es el único responsable del procesamiento inteligente.
+- Toda comunicación deberá realizarse mediante HTTP REST.
+- Las solicitudes y respuestas deberán cumplir los modelos definidos en **Backend-Data-Model.md**.
+- Backend será responsable de persistir los resultados obtenidos desde Data Science.
+- Data Science no almacenará información funcional de la aplicación.
 
 > [!IMPORTANT]
 >
-> Para la versión **1.0** del Contrato de Integración se establecen las siguientes decisiones:
+> La implementación interna del componente Data Science podrá evolucionar sin afectar estos flujos, siempre que se mantenga el contrato de integración y la compatibilidad de la API.
+
+
+# 9. Reglas Generales de Integración
+
+## 9.1 Objetivo
+
+Este capítulo establece las reglas generales que deberán cumplir los componentes **Backend** y **Data Science** durante el intercambio de información.
+
+Su propósito es garantizar una integración consistente, segura y compatible, definiendo criterios comunes para el procesamiento de solicitudes, formatos soportados, tiempos de respuesta y evolución del servicio.
+
+---
+
+# 9.2 Protocolo de Comunicación
+
+La comunicación entre Backend y Data Science deberá realizarse mediante el protocolo **HTTP** utilizando una **API REST**.
+
+Las solicitudes y respuestas intercambiadas deberán utilizar el formato **JSON**, excepto en los endpoints destinados al envío de archivos, los cuales utilizarán el tipo de contenido **multipart/form-data**.
+
+---
+
+# 9.3 Formatos Soportados
+
+Para el procesamiento documental, el componente Data Science aceptará los siguientes formatos de archivo.
+
+| Formato | Extensión | Soportado |
+|----------|-----------|:---------:|
+| PDF | .pdf | Sí |
+| Microsoft Word | .docx | Sí |
+| Texto Plano | .txt | Sí |
+| Markdown | .md | Sí |
+
+La incorporación de nuevos formatos deberá realizarse mediante una nueva versión del contrato o una actualización compatible del servicio.
+
+---
+
+# 9.4 Codificación de Caracteres
+
+Todo el contenido textual intercambiado entre Backend y Data Science deberá utilizar la codificación **UTF-8**.
+
+Esta regla aplica tanto para archivos procesados como para solicitudes enviadas en formato JSON.
+
+---
+
+# 9.5 Versionado de la API
+
+Todos los endpoints expuestos por el componente Data Science deberán incluir un identificador de versión en la ruta.
+
+Ejemplo:
+
+```text
+/api/v1/predict/text
+```
+
+La incorporación de cambios incompatibles requerirá la publicación de una nueva versión de la API.
+
+---
+
+# 9.6 Disponibilidad del Servicio
+
+El componente Data Science deberá exponer un endpoint de verificación del estado del servicio.
+
+Este endpoint permitirá al Backend validar la disponibilidad de la API antes de realizar solicitudes de clasificación.
+
+---
+
+# 9.7 Tiempos de Respuesta
+
+Como objetivo para la versión MVP, el componente Data Science deberá responder las solicitudes dentro de los siguientes tiempos estimados.
+
+| Operación | Tiempo Objetivo |
+|------------|----------------|
+| Clasificación de texto | Menor a 2 segundos |
+| Clasificación de documentos | Menor a 10 segundos |
+| Consulta de estado | Menor a 500 milisegundos |
+
+Estos valores constituyen objetivos de rendimiento y podrán ajustarse durante la evolución del proyecto.
+
+---
+
+# 9.8 Validación de Solicitudes
+
+Antes de procesar una solicitud, el componente Data Science deberá verificar como mínimo:
+
+- Presencia de los campos obligatorios.
+- Formato válido del archivo cuando corresponda.
+- Contenido no vacío.
+- Tipo de contenido esperado.
+- Integridad del cuerpo de la solicitud.
+
+Las validaciones funcionales relacionadas con usuarios, permisos y reglas de negocio corresponden exclusivamente al componente Backend.
+
+---
+
+# 9.9 Compatibilidad
+
+Toda modificación realizada sobre la API deberá preservar la compatibilidad con las versiones soportadas.
+
+Cuando sea posible:
+
+- Los nuevos atributos deberán ser opcionales.
+- Los modelos existentes no deberán eliminar atributos obligatorios.
+- Los endpoints existentes deberán mantener su comportamiento.
+
+---
+
+# 9.10 Seguridad
+
+El componente Data Science asumirá que todas las solicitudes recibidas provienen de un Backend previamente autenticado.
+
+Por esta razón, la API de Data Science no implementará mecanismos propios de autenticación o autorización.
+
+La protección de la API será responsabilidad de la infraestructura y del componente Backend.
+
+---
+
+# 9.11 Registro de Errores
+
+El componente Data Science podrá registrar información técnica necesaria para facilitar el diagnóstico de incidentes.
+
+Los mensajes enviados al Backend no deberán exponer información sensible relacionada con:
+
+- Implementación interna.
+- Modelo de Machine Learning.
+- Dependencias utilizadas.
+- Estructuras internas del sistema.
+- Configuración de infraestructura.
+
+---
+
+# 9.12 Evolución del Servicio
+
+El componente Data Science podrá incorporar nuevas capacidades mediante nuevos endpoints sin afectar las operaciones existentes.
+
+Las funcionalidades adicionales deberán mantener la compatibilidad con las versiones soportadas del contrato de integración.
+
+> [!IMPORTANT]
 >
-> - El procesamiento documental será **síncrono**.
-> - Backend administrará el almacenamiento físico de los documentos.
-> - Data Science administrará el procesamiento documental y la Base de Conocimiento.
-> - Backend nunca accederá directamente a la Base de Conocimiento.
-> - Data Science nunca administrará usuarios, autenticación ni proyectos.
-> - La implementación tecnológica podrá evolucionar sin modificar este contrato.
-
----
-
-# 9. Acuerdos de Integración
-
-Este capítulo establece los acuerdos que deberán respetar los componentes Backend y Data Science durante toda la vida útil del sistema.
-
-Estos acuerdos tienen como objetivo garantizar una integración consistente, desacoplada y mantenible.
-
----
-
-## 9.1 Administración del Documento
-
-El almacenamiento físico de los documentos es responsabilidad exclusiva del componente Backend.
-
-Data Science accederá a los documentos únicamente mediante la ubicación proporcionada por Backend y nunca administrará el almacenamiento físico de los archivos.
-
----
-
-## 9.2 Administración del Conocimiento
-
-La Base de Conocimiento es administrada exclusivamente por Data Science.
-
-Backend no accederá directamente a su estructura interna ni realizará operaciones de procesamiento documental.
-
----
-
-## 9.3 Ciclo de Vida
-
-El ciclo de vida del documento y el ciclo de vida del conocimiento son independientes.
-
-Backend administra:
-
-- Creación del documento.
-- Almacenamiento.
-- Asociación con proyectos.
-- Administración documental.
-
-Data Science administra:
-
-- Procesamiento.
-- Extracción de información.
-- Indexación.
-- Recuperación de contexto.
-- Generación de respuestas.
-
----
-
-## 9.4 Modelos de Intercambio
-
-Toda la información intercambiada entre ambos componentes deberá cumplir las definiciones establecidas en el documento **Backend-Data-Model.md**.
-
-Ningún componente podrá asumir atributos no definidos en dicho documento.
-
----
-
-## 9.5 Independencia Tecnológica
-
-Este contrato define capacidades funcionales y reglas de integración.
-
-La implementación tecnológica podrá evolucionar sin modificar este documento, siempre que se mantenga la compatibilidad funcional.
+> Todas las reglas definidas en este capítulo deberán ser respetadas por ambos componentes durante el desarrollo, las pruebas y la operación del sistema.
 
 ---
 
 # 10. Manejo de Errores
 
-Toda condición que impida completar una capacidad deberá ser informada mediante el modelo de respuesta correspondiente.
+## 10.1 Objetivo
+
+Este capítulo define el modelo de manejo de errores utilizado por la API REST del componente Data Science.
+
+Su propósito es proporcionar respuestas consistentes, facilitar la integración con Backend y permitir la identificación, registro y tratamiento uniforme de cualquier incidente ocurrido durante el procesamiento de las solicitudes.
+
+Todas las respuestas de error deberán utilizar una estructura común definida en el documento **Backend-Data-Model.md**.
 
 ---
 
-## 10.1 Principios
+# 10.2 Principios
 
-- Los errores deberán ser descriptivos.
-- No deberán exponerse detalles internos de implementación.
-- Backend será responsable de comunicar el resultado al usuario final.
+El manejo de errores deberá cumplir los siguientes principios.
 
----
-
-## 10.2 Clasificación General
-
-| Categoría | Descripción |
-|-----------|-------------|
-| Validación | Información de entrada incompleta o inválida. |
-| Documento | El documento no puede recuperarse o procesarse. |
-| Procesamiento | Error durante el procesamiento documental. |
-| Conocimiento | Error durante la recuperación de información. |
-| Sistema | Error interno del componente. |
+- Todas las respuestas deberán utilizar una estructura uniforme.
+- Los códigos HTTP deberán reflejar el resultado de la operación.
+- Los mensajes deberán ser claros y comprensibles.
+- No deberá exponerse información interna del modelo de Machine Learning.
+- Todos los errores deberán poder ser registrados por Backend.
+- Cada error deberá estar identificado mediante un código funcional único.
 
 ---
 
-## 10.3 Responsabilidades
+# 10.3 Modelo General de Error
 
-Backend administrará:
+Todas las respuestas de error deberán seguir la siguiente estructura.
 
-- Reintentos.
-- Comunicación con Frontend.
-- Auditoría.
+```json
+{
+    "timestamp": "2026-07-22T18:35:42Z",
+    "status": 422,
+    "error": "DOCUMENT_PROCESSING_ERROR",
+    "code": "DS-422-001",
+    "message": "No fue posible procesar el documento enviado.",
+    "path": "/api/v1/predict/file"
+}
+```
 
-Data Science administrará:
+---
 
-- Detección del error.
-- Registro técnico.
-- Generación del resultado correspondiente.
+# 10.4 Códigos HTTP
+
+| Código | Significado |
+|---------|-------------|
+| 200 | Operación ejecutada correctamente. |
+| 400 | Solicitud inválida. |
+| 404 | Recurso no encontrado. |
+| 413 | Archivo demasiado grande. |
+| 415 | Tipo de archivo no soportado. |
+| 422 | Error durante el procesamiento del contenido. |
+| 500 | Error interno del servicio. |
+| 503 | Servicio temporalmente no disponible. |
+
+---
+
+# 10.5 Catálogo de Errores Funcionales
+
+| Código | Error | Descripción |
+|---------|-------|-------------|
+| DS-400-001 | INVALID_REQUEST | La solicitud es inválida. |
+| DS-400-002 | MISSING_REQUIRED_FIELD | Faltan campos obligatorios. |
+| DS-413-001 | FILE_TOO_LARGE | El archivo excede el tamaño permitido. |
+| DS-415-001 | UNSUPPORTED_FILE_TYPE | El formato del archivo no es soportado. |
+| DS-422-001 | DOCUMENT_PROCESSING_ERROR | No fue posible procesar el documento. |
+| DS-422-002 | EMPTY_CONTENT | El contenido está vacío. |
+| DS-422-003 | TEXT_TOO_SHORT | El contenido es insuficiente para clasificar. |
+| DS-500-001 | MODEL_NOT_AVAILABLE | El modelo no está disponible. |
+| DS-500-002 | INTERNAL_ERROR | Error interno del componente Data Science. |
+| DS-503-001 | SERVICE_UNAVAILABLE | El servicio no se encuentra disponible. |
+
+---
+
+# 10.6 Responsabilidades
+
+## Backend
+
+Backend será responsable de:
+
+- Interpretar el código HTTP.
+- Registrar el error.
+- Persistir el incidente cuando corresponda.
+- Informar el resultado al usuario.
+- Implementar políticas de reintento cuando aplique.
+
+---
+
+## Data Science
+
+Data Science será responsable de:
+
+- Detectar el error.
+- Generar el código funcional correspondiente.
+- Registrar información técnica.
+- Retornar una respuesta consistente.
+- Evitar la exposición de información sensible.
+
+---
+
+# 10.7 Registro y Trazabilidad
+
+Cada error deberá poder ser identificado de manera única mediante el campo **code**.
+
+Esto permitirá:
+
+- Facilitar el diagnóstico.
+- Correlacionar registros entre Backend y Data Science.
+- Simplificar el soporte técnico.
+- Generar métricas sobre incidentes.
+
+---
+
+# 10.8 Consideraciones
+
+Los mensajes devueltos al Backend deberán describir el problema detectado sin revelar detalles relacionados con:
+
+- Arquitectura interna.
+- Algoritmos de Machine Learning.
+- Pipeline de procesamiento.
+- Dependencias utilizadas.
+- Configuración del servidor.
+
+> [!IMPORTANT]
+>
+> El catálogo de errores definido en este capítulo constituye la referencia oficial para la integración entre Backend y Data Science.
+>
+> Todo nuevo error incorporado en futuras versiones deberá mantener la estructura definida en este documento y actualizar el catálogo correspondiente.
+
+---
+
+# 10.9 Convención de Códigos de Error
+
+Con el fin de garantizar una identificación única y consistente de los errores del sistema, todos los componentes deberán utilizar una nomenclatura estandarizada para los códigos de error.
+
+La estructura general será la siguiente:
+
+```text
+<COMPONENTE>-<HTTP>-<IDENTIFICADOR>
+
+Ejemplo:
+
+DS-422-001
+│  │   │
+│  │   └── Identificador secuencial del error
+│  └────── Código HTTP asociado
+└───────── Componente responsable
+```
+
+---
+
+## Componentes
+
+| Prefijo | Componente |
+|----------|------------|
+| BE | Backend |
+| DS | Data Science |
+| API | API REST |
+| ML | Modelo de Machine Learning |
+
+---
+
+## Ejemplos
+
+| Código | Significado |
+|----------|-------------|
+| DS-400-001 | Solicitud inválida recibida por Data Science. |
+| DS-415-001 | Tipo de archivo no soportado. |
+| DS-422-001 | Error durante el procesamiento del documento. |
+| DS-500-001 | Modelo de Machine Learning no disponible. |
+| BE-400-001 | Error de validación generado por Backend. |
+| API-401-001 | Solicitud no autenticada. |
+| API-403-001 | Acceso no autorizado. |
+
+---
+
+## Beneficios
+
+La adopción de esta convención proporciona las siguientes ventajas:
+
+- Identificación inmediata del componente responsable.
+- Asociación directa con el código HTTP correspondiente.
+- Trazabilidad entre Backend y Data Science.
+- Simplificación del diagnóstico y soporte técnico.
+- Compatibilidad con herramientas de monitoreo y observabilidad.
+- Escalabilidad para incorporar nuevos componentes y funcionalidades.
+
+> [!NOTE]
+>
+> Todo nuevo código de error deberá respetar la estructura definida en este capítulo y ser incorporado al catálogo oficial de errores antes de su utilización.
 
 ---
 
 # 11. Compatibilidad y Versionado
 
-El Contrato de Integración será versionado para garantizar la compatibilidad entre Backend y Data Science.
+## 11.1 Objetivo
+
+Este capítulo establece las políticas de compatibilidad y versionado de la API REST del componente Data Science, con el fin de garantizar la estabilidad de la integración y facilitar la evolución del sistema sin afectar a los consumidores existentes.
 
 ---
 
-## 11.1 Compatibilidad
+## 11.2 Versionado de la API
 
-Las modificaciones que agreguen nuevas capacidades o atributos opcionales deberán mantener la compatibilidad con versiones anteriores.
+Todos los endpoints deberán incluir explícitamente la versión de la API dentro de la ruta.
 
-Las modificaciones incompatibles requerirán una nueva versión mayor del contrato.
+Ejemplo:
 
----
+```text
+/api/v1/predict/file
 
-## 11.2 Versionado
+/api/v1/predict/text
 
-Se adopta el siguiente esquema:
+/api/v1/health
+```
 
-| Versión | Descripción |
-|----------|-------------|
-| Mayor | Cambios incompatibles. |
-| Menor | Nuevas capacidades compatibles. |
-| Corrección | Ajustes editoriales o aclaraciones. |
+La versión deberá mantenerse estable durante todo el ciclo de vida del MVP.
 
 ---
 
-## 11.3 Vigencia
+## 11.3 Compatibilidad hacia Atrás
 
-Este documento corresponde a la versión **1.0** del Contrato de Integración.
+Siempre que sea posible, las nuevas versiones deberán mantener compatibilidad con las versiones anteriores.
 
----
+Se consideran cambios compatibles:
 
-# 12. Consideraciones Futuras
+- Incorporación de nuevos endpoints.
+- Adición de campos opcionales en las respuestas.
+- Incorporación de nuevos códigos de error.
+- Mejoras internas del modelo de Machine Learning.
+- Optimizaciones del pipeline de procesamiento.
 
-Las siguientes capacidades podrán incorporarse en versiones posteriores del Contrato de Integración:
-
-- Procesamiento asíncrono de documentos.
-- Reprocesamiento documental.
-- Eliminación de conocimiento.
-- Versionado documental.
-- Procesamiento incremental.
-- Nuevas capacidades de consulta.
-- Integración con múltiples repositorios documentales.
-
-La incorporación de estas capacidades deberá preservar, en la medida de lo posible, la compatibilidad con versiones anteriores del contrato.
+Estos cambios no requerirán modificaciones en los consumidores existentes.
 
 ---
 
-# Anexo A. Decisiones Arquitectónicas
+## 11.4 Cambios Incompatibles
+
+Se consideran cambios incompatibles aquellos que alteren el contrato de integración existente, tales como:
+
+- Eliminación de endpoints.
+- Cambio en la estructura de las solicitudes.
+- Eliminación de atributos obligatorios.
+- Modificación del significado de los campos existentes.
+- Cambio del formato de respuesta.
+
+Ante cualquiera de estos cambios será obligatoria la publicación de una nueva versión de la API.
+
+---
+
+## 11.5 Estrategia de Evolución
+
+La evolución del componente Data Science deberá realizarse siguiendo los siguientes principios:
+
+- Mantener la estabilidad del contrato vigente.
+- Minimizar el impacto sobre Backend.
+- Preservar la interoperabilidad entre versiones.
+- Documentar todas las modificaciones antes de su liberación.
+
+---
+
+## 11.6 Gestión de Versiones
+
+Cada versión del contrato deberá registrar como mínimo:
+
+- Número de versión.
+- Fecha de publicación.
+- Responsable.
+- Resumen de cambios.
+- Estado del documento.
+
+---
+
+## 11.7 Vigencia
+
+La presente especificación corresponde a la versión **2.0** del contrato de integración y será la referencia oficial para el desarrollo del MVP.
+
+Las futuras versiones deberán mantener este documento como línea base para la evolución del sistema.
 
 > [!IMPORTANT]
 >
-> Las siguientes decisiones fueron adoptadas para la versión **1.0** del proyecto.
+> Ninguna modificación del contrato podrá implementarse sin la correspondiente actualización de la documentación técnica y la aprobación de los equipos involucrados.
 
-| Código | Decisión |
-|---------|----------|
-| DA-01 | Backend administra el almacenamiento físico de los documentos. |
-| DA-02 | Data Science administra la Base de Conocimiento. |
-| DA-03 | Data Science nunca modifica el documento original. |
-| DA-04 | Backend nunca accede directamente a la Base de Conocimiento. |
-| DA-05 | El procesamiento documental será síncrono para la versión 1.0. |
-| DA-06 | El contrato es independiente del protocolo de comunicación. |
-| DA-07 | Los modelos de intercambio se definen en Backend-Data-Model.md. |
-| DA-08 | Backend y Data Science evolucionarán de forma desacoplada mientras respeten este contrato. |
+---
+
+# 11. Compatibilidad y Versionado
+
+## 11.1 Objetivo
+
+Este capítulo establece las políticas de compatibilidad y versionado de la API REST del componente Data Science, con el fin de garantizar la estabilidad de la integración y facilitar la evolución del sistema sin afectar a los consumidores existentes.
+
+---
+
+## 11.2 Versionado de la API
+
+Todos los endpoints deberán incluir explícitamente la versión de la API dentro de la ruta.
+
+Ejemplo:
+
+```text
+/api/v1/predict/file
+
+/api/v1/predict/text
+
+/api/v1/health
+```
+
+La versión deberá mantenerse estable durante todo el ciclo de vida del MVP.
+
+---
+
+## 11.3 Compatibilidad hacia Atrás
+
+Siempre que sea posible, las nuevas versiones deberán mantener compatibilidad con las versiones anteriores.
+
+Se consideran cambios compatibles:
+
+- Incorporación de nuevos endpoints.
+- Adición de campos opcionales en las respuestas.
+- Incorporación de nuevos códigos de error.
+- Mejoras internas del modelo de Machine Learning.
+- Optimizaciones del pipeline de procesamiento.
+
+Estos cambios no requerirán modificaciones en los consumidores existentes.
+
+---
+
+## 11.4 Cambios Incompatibles
+
+Se consideran cambios incompatibles aquellos que alteren el contrato de integración existente, tales como:
+
+- Eliminación de endpoints.
+- Cambio en la estructura de las solicitudes.
+- Eliminación de atributos obligatorios.
+- Modificación del significado de los campos existentes.
+- Cambio del formato de respuesta.
+
+Ante cualquiera de estos cambios será obligatoria la publicación de una nueva versión de la API.
+
+---
+
+## 11.5 Estrategia de Evolución
+
+La evolución del componente Data Science deberá realizarse siguiendo los siguientes principios:
+
+- Mantener la estabilidad del contrato vigente.
+- Minimizar el impacto sobre Backend.
+- Preservar la interoperabilidad entre versiones.
+- Documentar todas las modificaciones antes de su liberación.
+
+---
+
+## 11.6 Gestión de Versiones
+
+Cada versión del contrato deberá registrar como mínimo:
+
+- Número de versión.
+- Fecha de publicación.
+- Responsable.
+- Resumen de cambios.
+- Estado del documento.
+
+---
+
+## 11.7 Vigencia
+
+La presente especificación corresponde a la versión **2.0** del contrato de integración y será la referencia oficial para el desarrollo del MVP.
+
+Las futuras versiones deberán mantener este documento como línea base para la evolución del sistema.
+
+> [!IMPORTANT]
+>
+> Ninguna modificación del contrato podrá implementarse sin la correspondiente actualización de la documentación técnica y la aprobación de los equipos involucrados.
+
+---
+
+# 12. Funcionalidades Fuera del Alcance del MVP
+
+## 12.1 Objetivo
+
+Este capítulo identifica las funcionalidades previstas para futuras versiones del proyecto que no forman parte del alcance definido para el Producto Mínimo Viable (MVP).
+
+Su inclusión tiene como propósito proporcionar una visión de evolución del sistema sin comprometer la implementación actual.
+
+---
+
+## 12.2 Funcionalidades Planificadas
+
+Las siguientes capacidades han sido identificadas como parte de la evolución futura del proyecto:
+
+| Funcionalidad | Estado |
+|-------------------------------|-----------|
+| Chat sobre documentos | Futuro |
+| Recuperación Aumentada de Información (RAG) | Futuro |
+| Búsqueda semántica | Futuro |
+| Recomendación de documentos | Futuro |
+| Clasificación multietiqueta | Futuro |
+| Clasificación jerárquica | Futuro |
+| Reentrenamiento automático del modelo | Futuro |
+| Integración con bases vectoriales | Futuro |
+| Procesamiento asíncrono | Futuro |
+| Procesamiento distribuido | Futuro |
+| Versionado automático de modelos | Futuro |
+| Monitoreo de desempeño del modelo | Futuro |
+
+---
+
+## 12.3 Consideraciones
+
+Las funcionalidades descritas en este capítulo no forman parte de la versión 2.0 del contrato de integración.
+
+Su incorporación requerirá:
+
+- Revisión del alcance.
+- Actualización del contrato.
+- Definición de nuevos modelos de datos cuando corresponda.
+- Publicación de una nueva versión de la API.
+
+---
+
+## 12.4 Alcance Oficial del MVP
+
+La versión MVP del componente Data Science comprende únicamente las siguientes capacidades:
+
+- Clasificación de documentos.
+- Clasificación de texto libre.
+- Extracción de palabras clave.
+- Cálculo de probabilidad de clasificación.
+- Verificación del estado del servicio.
+
+Cualquier funcionalidad distinta a las anteriores será considerada una evolución posterior al MVP.
+
+> [!NOTE]
+>
+> La inclusión de funcionalidades futuras no implica un compromiso de implementación dentro del alcance del hackathon.
+
+---
+
+
+# 13. Anexos
+
+## 13.1 Anexo A – Glosario de Términos
+
+| Término | Definición |
+|----------|------------|
+| API REST | Interfaz basada en HTTP utilizada para la comunicación entre Backend y Data Science. |
+| Backend | Componente encargado de la lógica de negocio, persistencia e integración con el Frontend. |
+| Data Science | Componente responsable del procesamiento inteligente y la inferencia del modelo. |
+| Endpoint | Ruta específica de la API que expone una funcionalidad del servicio. |
+| Pipeline | Conjunto de etapas de procesamiento ejecutadas antes de la inferencia del modelo. |
+| Inferencia | Proceso mediante el cual el modelo predice la categoría de un documento o texto. |
+| Clasificación | Resultado generado por el modelo de Machine Learning. |
+| Palabras clave | Términos relevantes extraídos automáticamente del contenido procesado. |
+| Probabilidad | Nivel de confianza asociado a la clasificación obtenida. |
+| DTO | Objeto utilizado para intercambiar información entre Backend y Data Science. |
+| Health Check | Endpoint utilizado para verificar la disponibilidad del servicio. |
+| MVP | Producto Mínimo Viable definido para el hackathon. |
+| UTF-8 | Codificación estándar utilizada para representar texto. |
+
+---
+
+## 13.2 Anexo B – Acrónimos
+
+| Acrónimo | Significado |
+|-----------|-------------|
+| API | Application Programming Interface |
+| DTO | Data Transfer Object |
+| HTTP | HyperText Transfer Protocol |
+| JSON | JavaScript Object Notation |
+| ML | Machine Learning |
+| MVP | Minimum Viable Product |
+| PDF | Portable Document Format |
+| REST | Representational State Transfer |
+| SLA | Service Level Agreement |
+| UTF | Unicode Transformation Format |
+
+---
+
+## 13.3 Anexo C – Referencias Normativas
+
+La elaboración del presente documento se fundamenta en las siguientes referencias:
+
+- Software Design Specification (SDS) del proyecto.
+- Architecture Decision Records (ADR).
+- Engineering Standards del proyecto.
+- Backend-Data-Model v2.0.
+- Especificación HTTP/REST.
+- OpenAPI Specification (como referencia conceptual).
+- Documentación oficial de FastAPI.
+- Documentación oficial de Spring Boot.
+
+---
+
+## 13.4 Documento Relacionado
+
+El presente contrato se complementa con el documento **Backend-Data-Model v2.0**, en el cual se definen los modelos de datos, estructuras JSON, DTOs, respuestas, validaciones y restricciones utilizadas por la API REST del componente Data Science.
+
+> [!IMPORTANT]
+>
+> Cualquier modificación realizada sobre los modelos de datos deberá mantenerse alineada con las definiciones establecidas en este contrato de integración.

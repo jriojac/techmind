@@ -3,7 +3,7 @@
 | Proyecto | AyniKortex |
 |-----------|------------|
 | Documento | Backend-Data-Model |
-| Versión | 1.0 |
+| Versión | 2.0 |
 | Estado | En Diseño |
 | Responsable | Equipo Data Science |
 | Consumidor | Equipo Backend |
@@ -14,34 +14,104 @@
 
 | Versión | Fecha | Autor | Descripción |
 |----------|-------|--------|-------------|
-| 1.0 | YYYY-MM-DD | Equipo Data Science | Versión inicial del Modelo de Datos para la integración entre Backend y Data Science. |
+| 1.0 | 2026-07-21 | Equipo Data Science | Versión inicial basada en la arquitectura de Base de Conocimiento. |
+| 2.0 | 2026-07-22 | Equipo Data Science | Rediseño completo del modelo de datos para la arquitectura REST de clasificación documental mediante Machine Learning. |
+
+---
+
+# Índice
+
+1. Introducción
+
+2. Objetivo
+
+3. Alcance
+
+4. Convenciones
+
+4.1 Convenciones Generales
+
+4.2 Mapeo de Tipos de Datos
+
+4.3 Convenciones de Enumeraciones
+
+4.4 Convenciones para Fechas
+
+4.5 Convenciones para Identificadores
+
+4.6 Convenciones para Campos Opcionales
+
+4.7 Convenciones para Versionado de Modelos
+
+4.8 Restricciones Generales de los Datos
+
+5. Modelos de Solicitud
+
+6. Modelos de Respuesta
+
+7. Modelos Compartidos
+
+8. Escenarios de Integración
+
+9. Compatibilidad y Versionado
+
+10. Anexos
 
 ---
 
 # 1. Introducción
 
-Este documento define los modelos de datos utilizados para el intercambio de información entre los componentes **Backend** y **Data Science** del proyecto **AyniKortex**.
+El presente documento define los modelos de datos utilizados para el intercambio de información entre los componentes **Backend** y **Data Science** del proyecto **AyniKortex**.
 
-Su propósito es establecer una estructura común para las solicitudes y respuestas intercambiadas durante la ejecución de las capacidades descritas en el documento **Backend-Data-Contract.md**, garantizando que ambos equipos implementen la integración utilizando un contrato único, consistente e independiente de la tecnología utilizada.
+Su propósito es establecer una estructura común para las solicitudes y respuestas intercambiadas a través de la API REST del componente Data Science, garantizando una integración consistente, desacoplada e independiente de las tecnologías utilizadas por cada equipo.
 
-Los modelos aquí definidos representan únicamente la estructura de los datos intercambiados entre componentes. La implementación técnica (REST, gRPC, mensajería, etc.) queda fuera del alcance de este documento.
+Los modelos descritos en este documento representan exclusivamente las estructuras de datos intercambiadas entre componentes. Los aspectos relacionados con la implementación de la API REST, protocolos de comunicación, flujos operativos y responsabilidades funcionales se encuentran definidos en el documento **Backend-Data-Contract v2.0**.
+
+> [!IMPORTANT]
+>
+> Este documento constituye la referencia oficial para la definición de los modelos de datos utilizados por la API REST del componente Data Science.
+>
+> Toda modificación realizada sobre estos modelos deberá mantenerse alineada con el contrato de integración vigente.
 
 ---
 
 # 2. Objetivo
 
-Definir los modelos de datos que utilizarán los componentes **Backend** y **Data Science** para garantizar una integración consistente, desacoplada y compatible durante el intercambio de información.
+Definir los modelos de datos que utilizarán los componentes **Backend** y **Data Science** para intercambiar información durante la clasificación de documentos y texto libre.
 
 Este documento constituye la referencia oficial para:
 
-- definir las estructuras de solicitud (Request);
-- definir las estructuras de respuesta (Response);
-- establecer los modelos reutilizables compartidos entre ambos componentes;
-- asegurar la compatibilidad entre futuras versiones del contrato.
+- Definir las estructuras de solicitud (Request).
+- Definir las estructuras de respuesta (Response).
+- Establecer modelos reutilizables compartidos.
+- Garantizar la compatibilidad entre versiones del contrato.
+- Facilitar el desarrollo paralelo entre Backend y Data Science.
 
 ---
 
-# 3. Convenciones
+# 3. Alcance
+
+Los modelos definidos en este documento cubren exclusivamente las capacidades incluidas en el MVP del proyecto:
+
+- Clasificación de documentos.
+- Clasificación de texto libre.
+- Extracción de palabras clave.
+- Cálculo del nivel de confianza de la clasificación.
+- Consulta del estado del servicio.
+
+No forman parte del alcance de esta versión los modelos relacionados con:
+
+- Chat sobre documentos.
+- Recuperación Aumentada de Información (RAG).
+- Búsqueda semántica.
+- Gestión de conversaciones.
+- Recomendación de documentos.
+
+Estas funcionalidades podrán incorporarse en futuras versiones mediante la evolución del contrato de integración.
+
+---
+
+# 4. Convenciones
 
 Las siguientes convenciones aplican a todos los modelos definidos en este documento.
 
@@ -51,362 +121,689 @@ Las siguientes convenciones aplican a todos los modelos definidos en este docume
 | Formato de Fechas | ISO-8601 |
 | Zona Horaria | UTC |
 | Identificadores | UUID |
-| Enumeraciones | Valores en MAYÚSCULAS |
-| Valores Opcionales | Se omiten cuando no existan |
-| Formato de Texto | UTF-8 |
+| Enumeraciones | MAYÚSCULAS |
+| Formato de intercambio | JSON |
+| Tipo de contenido | application/json o multipart/form-data |
 
 > [!IMPORTANT]
 >
-> Las convenciones definidas en este documento deberán ser respetadas por Backend y Data Science para garantizar la compatibilidad del contrato de integración.
+> Backend y Data Science deberán respetar estas convenciones para garantizar la compatibilidad del contrato de integración.
+
+---
+
+# 4.1 Convenciones Generales
+
+Las siguientes reglas deberán aplicarse en todos los modelos definidos en este documento.
+
+- Todos los atributos obligatorios deberán estar presentes en la solicitud o respuesta correspondiente.
+- Los atributos opcionales podrán omitirse cuando no exista información disponible.
+- No deberán enviarse atributos con valores nulos cuando puedan omitirse.
+- Todos los nombres de atributos utilizarán **camelCase**.
+- Los nombres de las enumeraciones utilizarán letras mayúsculas.
+- Las fechas deberán expresarse utilizando el estándar ISO-8601 en UTC.
+- Los identificadores únicos utilizarán UUID versión 4.
+- Los mensajes intercambiados entre Backend y Data Science deberán codificarse utilizando UTF-8.
+
+---
+
+# 4.2 Mapeo de Tipos de Datos
+
+Con el fin de garantizar una implementación consistente entre los diferentes lenguajes utilizados en el proyecto, los tipos definidos en este documento deberán interpretarse de acuerdo con la siguiente equivalencia.
+
+| Tipo del Contrato | Java (Spring Boot) | Python (FastAPI) | JSON | Descripción |
+|-------------------|--------------------|------------------|------|-------------|
+| UUID | UUID | uuid.UUID | string | Identificador único universal. |
+| String | String | str | string | Cadena de texto UTF-8. |
+| Integer | Integer | int | integer | Número entero. |
+| Decimal | BigDecimal | float | number | Valor decimal para probabilidades y puntajes. |
+| Boolean | Boolean | bool | boolean | Valor lógico. |
+| DateTime | OffsetDateTime | datetime | string | Fecha y hora en formato ISO-8601 UTC. |
+| Binary | MultipartFile | UploadFile | binary | Archivo enviado mediante multipart/form-data. |
+| Array | List<T> | list[T] | array | Colección ordenada de elementos. |
+| Object | Clase / DTO | Pydantic Model | object | Modelo compuesto por múltiples atributos. |
+
+---
+
+# 4.3 Convenciones de Enumeraciones
+
+Todas las enumeraciones definidas en este documento deberán cumplir las siguientes reglas.
+
+- Los valores deberán escribirse completamente en mayúsculas.
+- No deberán contener espacios.
+- Cuando sea necesario separar palabras se utilizará el carácter guion bajo (_).
+
+### Ejemplos
+
+```text
+SUCCESS
+
+FAILED
+
+PDF
+
+DOCX
+
+TXT
+
+MD
+```
+
+---
+
+# 4.4 Convenciones para Fechas
+
+Todas las fechas intercambiadas entre Backend y Data Science deberán utilizar el estándar ISO-8601 en horario UTC.
+
+### Ejemplo
+
+```text
+2026-07-22T15:48:35Z
+```
+
+No se permitirá el intercambio de fechas utilizando formatos locales.
+
+---
+
+# 4.5 Convenciones para Identificadores
+
+Todos los identificadores deberán utilizar UUID versión 4.
+
+### Ejemplo
+
+```text
+550e8400-e29b-41d4-a716-446655440000
+```
+
+No deberán utilizarse identificadores secuenciales como parte del contrato de integración.
+
+---
+
+# 4.6 Convenciones para Campos Opcionales
+
+Cuando un atributo sea opcional:
+
+- podrá omitirse completamente;
+- no será obligatorio enviar el valor `null`;
+- Backend no deberá asumir la existencia del atributo.
+
+Esta regla permite mantener la compatibilidad entre versiones del contrato.
+
+---
+
+# 4.7 Convenciones para Versionado de Modelos
+
+Toda modificación realizada sobre un modelo deberá respetar las siguientes reglas.
+
+- No eliminar atributos obligatorios.
+- Agregar nuevos atributos únicamente como opcionales cuando sea posible.
+- Mantener la compatibilidad hacia atrás.
+- Actualizar el historial de cambios del documento.
+
+> [!NOTE]
 >
-> Cualquier modificación deberá reflejarse mediante el mecanismo de versionado definido en este documento.
+> Estas convenciones constituyen la base para la implementación de los modelos de datos en los componentes Backend y Data Science y deberán respetarse durante todo el ciclo de vida del proyecto.
 
 ---
 
-# 4. Modelos de Solicitud
+# 4.8 Restricciones Generales de los Datos
 
-Este capítulo describe los modelos utilizados por Backend para solicitar la ejecución de las capacidades expuestas por el componente Data Science.
+Con el fin de garantizar la consistencia de los modelos de datos y evitar ambigüedades durante la implementación, todos los atributos definidos en este documento deberán cumplir las restricciones descritas en esta sección.
 
-Los modelos de este capítulo reutilizan los objetos compartidos definidos en el **Capítulo 6**, evitando duplicidad de definiciones y facilitando la evolución del contrato.
+Estas reglas aplican a todos los modelos de solicitud, respuesta y objetos compartidos, salvo que un modelo indique explícitamente una restricción adicional.
 
 ---
 
-## 4.1 ProcessDocumentRequest
+## 4.8.1 Restricciones para Identificadores
 
-Representa la solicitud enviada por Backend para incorporar un documento a la Base de Conocimiento.
+| Atributo | Restricción |
+|-----------|-------------|
+| projectId | UUID versión 4 válido. |
+| requestId | Cadena alfanumérica única generada por Backend. |
+| correlationId *(futuras versiones)* | Identificador único para trazabilidad distribuida. |
+
+### Observaciones
+
+- Todos los identificadores deberán ser únicos dentro del contexto de la operación.
+- Data Science no generará ni modificará los identificadores enviados por Backend.
+
+---
+
+## 4.8.2 Restricciones para Texto
+
+| Atributo | Restricción |
+|-----------|-------------|
+| title | Máximo 200 caracteres. |
+| text | Máximo 50 000 caracteres. |
+| category | Máximo 100 caracteres. |
+| subcategory | Máximo 100 caracteres. |
+| keyword.term | Máximo 100 caracteres. |
+| message | Máximo 500 caracteres. |
+
+### Observaciones
+
+- Todo el contenido deberá utilizar codificación UTF-8.
+- No deberán enviarse cadenas vacías para atributos obligatorios.
+
+---
+
+## 4.8.3 Restricciones para Valores Numéricos
+
+| Campo | Restricción |
+|---------|-------------|
+| confidence | Valor entre 0.0 y 1.0. |
+| keyword.score | Valor entre 0.0 y 1.0. |
+| processingTime | Mayor o igual a 0 milisegundos. |
+
+### Observaciones
+
+Los valores decimales deberán representarse utilizando punto (`.`) como separador decimal.
+
+Ejemplo:
+
+```text
+0.95
+```
+
+---
+
+## 4.8.4 Restricciones para Colecciones
+
+| Campo | Restricción |
+|---------|-------------|
+| keywords | Máximo 10 elementos. |
+
+### Observaciones
+
+- La lista podrá estar vacía cuando no existan palabras clave relevantes.
+- No deberán existir elementos duplicados.
+
+---
+
+## 4.8.5 Restricciones para Archivos
+
+Los archivos enviados al endpoint de clasificación documental deberán cumplir las siguientes condiciones.
+
+| Restricción | Valor |
+|--------------|-------|
+| Formatos permitidos | PDF, DOCX, TXT, MD |
+| Tamaño máximo | Configurable por el servicio |
+| Contenido | No vacío |
+| Codificación de texto | UTF-8 cuando aplique |
+
+### Observaciones
+
+El tamaño máximo podrá modificarse mediante configuración sin requerir cambios en el contrato de integración.
+
+---
+
+## 4.8.6 Restricciones para Fechas
+
+Todas las fechas deberán expresarse utilizando el estándar ISO-8601 en horario UTC.
+
+Ejemplo:
+
+```text
+2026-07-22T16:35:42Z
+```
+
+No se admitirán formatos regionales.
+
+---
+
+## 4.8.7 Restricciones para Enumeraciones
+
+Todos los atributos definidos como enumeraciones deberán utilizar exclusivamente los valores documentados en este contrato.
+
+No deberán enviarse valores distintos a los especificados.
+
+Ejemplo:
+
+```text
+SUCCESS
+
+FAILED
+
+PDF
+
+DOCX
+
+TXT
+
+MD
+```
+
+---
+
+## 4.8.8 Restricciones para Versiones
+
+Las versiones de la API y del modelo de Machine Learning deberán seguir el esquema de Versionado Semántico (Semantic Versioning).
+
+Formato:
+
+```text
+MAJOR.MINOR.PATCH
+```
+
+Ejemplo:
+
+```text
+1.0.0
+
+2.1.3
+
+3.0.0
+```
+
+---
+
+## 4.8.9 Validación de Datos
+
+Antes de procesar cualquier solicitud, el componente Data Science deberá verificar que todos los atributos cumplan las restricciones definidas en esta sección.
+
+Cuando alguna validación falle, la API deberá responder utilizando el modelo **ErrorResponse** definido en este documento y el catálogo de errores especificado en **Backend-Data-Contract v2.0**.
+
+> [!IMPORTANT]
+>
+> Las restricciones descritas en esta sección constituyen la referencia oficial para la validación de datos intercambiados entre Backend y Data Science. Cualquier modificación deberá reflejarse tanto en este documento como en el contrato de integración correspondiente.
+
+---
+
+# 5. Modelos de Solicitud
+
+Este capítulo define los modelos de datos utilizados por el componente **Backend** para invocar las capacidades expuestas por la API REST del componente **Data Science**.
+
+Cada modelo representa la estructura esperada por un endpoint específico y deberá respetar las convenciones establecidas en este documento.
+
+Los modelos de solicitud contienen únicamente la información necesaria para ejecutar el proceso de clasificación, evitando el intercambio de datos ajenos al propósito del servicio.
+
+---
+
+## Relación entre Modelos
+
+```mermaid
+classDiagram
+
+    FileClassificationRequest --> Metadata
+
+    TextClassificationRequest --> Metadata
+```
+
+---
+
+## 5.1 FileClassificationRequest
+
+### Objetivo
+
+Representa la solicitud enviada por Backend para clasificar un documento mediante el endpoint:
+
+```text
+POST /api/v1/predict/file
+```
+
+El documento será procesado por el componente Data Science para obtener su clasificación automática.
+
+---
 
 ### Atributos
 
 | Campo | Tipo | Obligatorio | Descripción |
 |--------|------|-------------|-------------|
-| projectId | UUID | Sí | Identificador del proyecto al que pertenece el documento. |
-| document | Document | Sí | Información del documento que será procesado. |
-| uploadedAt | DateTime | Sí | Fecha y hora en que el documento fue incorporado por Backend. |
-| metadata | RequestMetadata | No | Información adicional asociada a la solicitud. |
+| file | Binary | Sí | Archivo que será procesado. |
+| projectId | UUID | Sí | Identificador del proyecto asociado. |
+| metadata | Metadata | No | Información complementaria de la solicitud. |
+
+---
+
+### Restricciones
+
+- El archivo deberá enviarse mediante **multipart/form-data**.
+- El archivo no podrá estar vacío.
+- El tipo de archivo deberá corresponder a uno de los formatos soportados.
+- El tamaño máximo permitido será definido por la configuración del servicio.
+
+---
+
+### Formatos Soportados
+
+| Formato | Extensión |
+|----------|-----------|
+| PDF | .pdf |
+| Word | .docx |
+| Texto Plano | .txt |
+| Markdown | .md |
+
+---
+
+### Ejemplo
+
+```text
+multipart/form-data
+
+file=documentacion.pdf
+
+projectId=550e8400-e29b-41d4-a716-446655440000
+```
+
+---
 
 ### Observaciones
 
-- Backend es el propietario del documento.
-- Data Science utilizará únicamente la información contenida en el objeto `Document`.
-- La ubicación física del documento es transparente para Data Science; únicamente utilizará el atributo `uri` para acceder al recurso.
+Backend será responsable de validar la solicitud antes de enviarla al componente Data Science.
+
+El contenido del archivo será procesado exclusivamente durante la ejecución de la solicitud y no será almacenado por el componente Data Science.
+
+---
+
+## 5.2 TextClassificationRequest
+
+### Objetivo
+
+Representa la solicitud utilizada para clasificar contenido enviado como texto libre mediante el endpoint:
+
+```text
+POST /api/v1/predict/text
+```
+
+---
+
+### Atributos
+
+| Campo | Tipo | Obligatorio | Descripción |
+|--------|------|-------------|-------------|
+| title | String | No | Título asociado al contenido. |
+| text | String | Sí | Texto que será clasificado. |
+| projectId | UUID | Sí | Identificador del proyecto. |
+| metadata | Metadata | No | Información complementaria de la solicitud. |
+
+---
+
+### Restricciones
+
+- El contenido no podrá ser vacío.
+- El texto deberá utilizar codificación UTF-8.
+- El tamaño máximo del contenido será definido por la configuración del servicio.
+
+---
 
 ### Ejemplo
 
 ```json
 {
-  "projectId": "c3fa5d86-8a77-41b4-bc4c-8b3f9e95a2d1",
-  "document": {
-    "id": "550e8400-e29b-41d4-a716-446655440000",
-    "uri": "/documents/api-authentication.pdf",
-    "type": "PDF"
-  },
-  "uploadedAt": "2026-07-21T15:20:00Z",
-  "metadata": {
-    "uploadedBy": "USR-1001",
-    "source": "WEB",
-    "language": "es"
-  }
+    "title": "Manual de Arquitectura",
+    "text": "Este documento describe la arquitectura del sistema...",
+    "projectId": "550e8400-e29b-41d4-a716-446655440000",
+    "metadata": {
+        "source": "WEB",
+        "language": "es"
+    }
 }
 ```
 
 ---
 
-## 4.2 AnswerQuestionRequest
+### Observaciones
 
-Representa la solicitud enviada por Backend para obtener una respuesta basada en la Base de Conocimiento.
+El componente Data Science aplicará el mismo pipeline de preprocesamiento utilizado para la clasificación documental.
+
+Esto garantiza consistencia entre ambos mecanismos de entrada.
+
+---
+
+# 6. Modelos de Respuesta
+
+Este capítulo define los modelos de datos utilizados por el componente **Data Science** para responder las solicitudes realizadas por **Backend**.
+
+Todos los modelos de respuesta deberán cumplir las convenciones establecidas en este documento y mantener compatibilidad con el contrato de integración definido en **Backend-Data-Contract v2.0**.
+
+Los modelos descritos en este capítulo representan exclusivamente la información intercambiada entre componentes y no exponen detalles internos de la implementación del modelo de Machine Learning.
+
+---
+
+## Relación entre Modelos
+
+```mermaid
+classDiagram
+
+    ClassificationResponse --> Classification
+
+    Classification --> Keyword
+
+    ErrorResponse
+
+    HealthResponse
+```
+
+---
+
+## 6.1 ClassificationResponse
+
+### Objetivo
+
+Representa la respuesta generada por el componente Data Science después de procesar una solicitud de clasificación.
+
+Este modelo será utilizado por los endpoints:
+
+- POST /api/v1/predict/file
+- POST /api/v1/predict/text
+
+---
 
 ### Atributos
 
 | Campo | Tipo | Obligatorio | Descripción |
 |--------|------|-------------|-------------|
-| projectId | UUID | Sí | Proyecto sobre el cual se realizará la consulta. |
-| question | String | Sí | Pregunta realizada por el usuario. |
-| conversationId | UUID | No | Identificador de la conversación asociada a la consulta. |
-| metadata | RequestMetadata | No | Información adicional proporcionada por Backend. |
+| requestId | String | No | Identificador de la solicitud recibido desde Backend. |
+| status | Status | Sí | Estado general de la operación. |
+| classification | Classification | Sí | Resultado de la clasificación realizada. |
+| processingTime | Integer | Sí | Tiempo de procesamiento en milisegundos. |
+| modelVersion | String | Sí | Versión del modelo de Machine Learning utilizada para generar la inferencia. Sigue el esquema de Versionado Semántico (MAJOR.MINOR.PATCH). |
+| timestamp | DateTime | Sí | Fecha y hora de generación de la respuesta. |
 
-### Observaciones
+---
 
-- Todas las consultas deberán ejecutarse dentro del contexto de un proyecto.
-- El atributo `conversationId` permitirá mantener continuidad conversacional en futuras versiones del sistema.
-- El contenido de `metadata` es opcional y podrá ampliarse sin romper la compatibilidad del contrato.
+### Ejemplo
 
 ### Ejemplo
 
 ```json
 {
-  "projectId": "c3fa5d86-8a77-41b4-bc4c-8b3f9e95a2d1",
-  "question": "¿Cómo funciona el proceso de autenticación?",
-  "conversationId": "9d27a4f2-f4f4-4567-9e18-f55f3b0d12aa",
-  "metadata": {
-    "language": "es",
-    "source": "WEB"
-  }
+    "requestId": "REQ-20260722-000001",
+    "status": "SUCCESS",
+    "classification": {
+        "category": "Arquitectura",
+        "subcategory": "Microservicios",
+        "confidence": 0.97,
+        "keywords": [
+            {
+                "term": "docker",
+                "score": 0.96
+            },
+            {
+                "term": "kubernetes",
+                "score": 0.93
+            },
+            {
+                "term": "api",
+                "score": 0.89
+            }
+        ]
+    },
+    "processingTime": 624,
+    "modelVersion": "1.0.0",
+    "timestamp": "2026-07-22T15:40:18Z"
 }
 ```
 
 ---
 
-# 5. Modelos de Respuesta
+### Observaciones
 
-Este capítulo describe los modelos utilizados por el componente **Data Science** para responder las solicitudes realizadas por **Backend**.
+El objeto **classification** concentra toda la información funcional generada por el modelo.
 
-Cada modelo representa el resultado de una capacidad definida en el documento **Backend-Data-Contract.md**.
-
-Los modelos de este capítulo reutilizan los objetos compartidos definidos en el **Capítulo 6**, evitando la duplicidad de definiciones y facilitando la evolución del contrato.
+Esto facilita la evolución futura del contrato sin afectar la estructura principal de la respuesta.
 
 ---
 
-## 5.1 ProcessDocumentResponse
+## 6.2 ErrorResponse
 
-Representa el resultado del procesamiento de un documento incorporado a la Base de Conocimiento.
+### Objetivo
+
+Representa la estructura estándar utilizada para responder cualquier error producido por la API REST del componente Data Science.
+
+Este modelo será utilizado independientemente del endpoint invocado.
+
+---
 
 ### Atributos
 
 | Campo | Tipo | Obligatorio | Descripción |
 |--------|------|-------------|-------------|
-| document | Document | Sí | Documento procesado. |
-| status | Status | Sí | Estado del procesamiento. |
-| processedAt | DateTime | Sí | Fecha y hora de finalización del procesamiento. |
-| processingTime | Integer | Sí | Tiempo total empleado para procesar el documento, expresado en milisegundos. |
-| message | String | No | Mensaje descriptivo del resultado del procesamiento. |
-| statistics | Statistics | No | Estadísticas generadas durante el procesamiento. |
+| requestId | String | No | Identificador de la solicitud. |
+| timestamp | DateTime | Sí | Fecha y hora del error. |
+| status | Integer | Sí | Código HTTP asociado. |
+| error | String | Sí | Nombre del error. |
+| code | String | Sí | Código funcional definido en el contrato. |
+| message | String | Sí | Descripción del error. |
+| path | String | Sí | Endpoint donde ocurrió el error. |
 
-### Observaciones
-
-- El atributo `status` representa el resultado general del procesamiento.
-- El atributo `statistics` tiene únicamente fines informativos y no deberá utilizarse como parte de la lógica de negocio de Backend.
-- La estructura del documento almacenado continúa siendo responsabilidad exclusiva de Backend.
+---
 
 ### Ejemplo
 
 ```json
 {
-  "document": {
-    "id": "550e8400-e29b-41d4-a716-446655440000",
-    "uri": "/documents/api-authentication.pdf",
-    "type": "PDF"
-  },
-  "status": "SUCCESS",
-  "processedAt": "2026-07-21T15:24:31Z",
-  "processingTime": 3821,
-  "message": "Documento incorporado correctamente a la Base de Conocimiento.",
-  "statistics": {
-    "pagesProcessed": 18,
-    "chunksGenerated": 154,
-    "detectedLanguage": "es",
-    "documentCategory": "Arquitectura"
-  }
+    "requestId": "REQ-20260722-000001",
+    "timestamp": "2026-07-22T15:42:01Z",
+    "status": 422,
+    "error": "DOCUMENT_PROCESSING_ERROR",
+    "code": "DS-422-001",
+    "message": "No fue posible procesar el documento.",
+    "path": "/api/v1/predict/file"
 }
 ```
 
 ---
 
-## 5.2 AnswerQuestionResponse
+### Observaciones
 
-Representa la respuesta generada por el componente Data Science a partir de la Base de Conocimiento.
+Todos los errores deberán respetar la estructura definida en este modelo para garantizar un tratamiento uniforme por parte del componente Backend.
+
+---
+
+## 6.3 HealthResponse
+
+### Objetivo
+
+Representa la respuesta generada por el endpoint de verificación del estado del servicio.
+
+---
 
 ### Atributos
 
 | Campo | Tipo | Obligatorio | Descripción |
 |--------|------|-------------|-------------|
-| status | Status | Sí | Estado de la consulta realizada. |
-| answer | String | Sí | Respuesta generada para el usuario. |
-| generatedAt | DateTime | Sí | Fecha y hora de generación de la respuesta. |
-| processingTime | Integer | Sí | Tiempo empleado para generar la respuesta, expresado en milisegundos. |
-| message | String | No | Información adicional relacionada con la respuesta. |
-| metadata | ResponseMetadata | No | Información complementaria generada durante la consulta. |
+| serviceStatus | String | Sí | Estado actual del servicio. |
+| service | String | Sí | Nombre del servicio. |
+| version | String | Sí | Versión de la API REST. |
+| uptime | Integer | No | Tiempo de disponibilidad del servicio expresado en segundos. |
+| timestamp | DateTime | Sí | Fecha y hora de generación de la respuesta. |
 
-### Observaciones
-
-- La respuesta corresponde únicamente a la información obtenida desde la Base de Conocimiento.
-- El atributo `metadata` contiene información complementaria que podrá ampliarse en futuras versiones sin romper la compatibilidad del contrato.
-- Backend es responsable de presentar la respuesta al usuario final.
+---
 
 ### Ejemplo
 
 ```json
 {
-  "status": "SUCCESS",
-  "answer": "La autenticación del sistema utiliza JWT para validar las solicitudes entre componentes.",
-  "generatedAt": "2026-07-21T17:10:30Z",
-  "processingTime": 842,
-  "message": "Consulta procesada correctamente.",
-  "metadata": {
-    "confidence": 0.96,
-    "references": [
-      {
-        "id": "550e8400-e29b-41d4-a716-446655440000",
-        "title": "Guía de Arquitectura"
-      },
-      {
-        "id": "66af7813-a48b-4894-8d95-8216cb3d85aa",
-        "title": "Manual Backend"
-      }
-    ]
-  }
+    "serviceStatus": "UP",
+    "service": "Data Science API",
+    "version": "2.0.0",
+    "uptime": 54127,
+    "timestamp": "2026-07-22T15:45:12Z"
 }
 ```
 
 ---
 
-# 6. Modelos Compartidos
+### Observaciones
 
-Los modelos definidos en este capítulo representan estructuras de datos reutilizables por múltiples solicitudes y respuestas del contrato de integración entre **Backend** y **Data Science**.
+Este modelo será utilizado exclusivamente por el endpoint:
 
-Su propósito es evitar la duplicidad de definiciones, facilitar el mantenimiento del contrato y garantizar la consistencia entre las capacidades actuales y futuras del sistema.
+```text
+GET /api/v1/health
+```
 
-Cada modelo describe únicamente la información necesaria para cumplir su propósito dentro del proceso de integración.
+El atributo **serviceStatus** representa el estado operativo del servicio y no debe confundirse con la enumeración **Status**, utilizada para indicar el resultado de las operaciones de clasificación.
 
 ---
 
-## 6.1 DocumentDescriptor
+# 7. Modelos Compartidos
 
-Representa la información mínima requerida por el componente **Data Science** para localizar y procesar un documento administrado por **Backend**.
+Los modelos definidos en este capítulo representan estructuras reutilizables empleadas por múltiples solicitudes y respuestas del contrato de integración.
 
-Este modelo será utilizado únicamente en las solicitudes de procesamiento documental.
+Su propósito es evitar la duplicidad de definiciones, facilitar el mantenimiento del contrato y garantizar la consistencia entre los diferentes endpoints expuestos por la API REST del componente Data Science.
 
-### Atributos
+---
 
-| Campo | Tipo | Obligatorio | Descripción |
-|--------|------|-------------|-------------|
-| id | UUID | Sí | Identificador único del documento. |
-| uri | String | Sí | Ubicación física o lógica del documento administrada por Backend. |
-| type | Enum | Sí | Tipo de documento que será procesado. |
+## Relación entre Modelos
 
-### Enumeración type
+```mermaid
+classDiagram
 
-| Valor | Descripción |
-|--------|-------------|
-| PDF | Documento PDF |
-| DOCX | Documento Microsoft Word |
-| TXT | Documento de texto plano |
-| MD | Documento Markdown |
+    Classification --> Keyword
 
-### Observaciones
+    FileClassificationRequest --> Metadata
 
-- Backend es el propietario del documento.
-- Data Science utilizará únicamente el atributo **uri** para acceder al contenido.
-- La ubicación física del documento es transparente para Data Science.
-- Nuevos formatos podrán incorporarse ampliando la enumeración **type** sin afectar la compatibilidad del contrato.
+    TextClassificationRequest --> Metadata
 
-### Ejemplo
-
-```json
-{
-    "id": "550e8400-e29b-41d4-a716-446655440000",
-    "uri": "/documents/api-authentication.pdf",
-    "type": "PDF"
-}
+    ClassificationResponse --> Classification
 ```
 
 ---
 
-## 6.2 DocumentReference
+## 7.1 Classification
 
-Representa una referencia a un documento previamente conocido por Backend.
+### Objetivo
 
-Este modelo será utilizado en las respuestas cuando únicamente sea necesario identificar el documento sobre el cual se ejecutó una operación.
+Representa el resultado funcional generado por el modelo de Machine Learning.
+
+Este modelo concentra toda la información relacionada con la clasificación obtenida durante la inferencia.
+
+---
 
 ### Atributos
 
 | Campo | Tipo | Obligatorio | Descripción |
 |--------|------|-------------|-------------|
-| id | UUID | Sí | Identificador único del documento. |
+| category | String | Sí | Categoría principal asignada al documento. |
+| subcategory | String | No | Subcategoría detectada. |
+| confidence | Decimal | Sí | Nivel de confianza de la clasificación. |
+| keywords | Keyword[] | Sí | Palabras clave relevantes extraídas del contenido. |
 
-### Observaciones
+---
 
-- No contiene información de ubicación ni de tipo documental.
-- Backend ya dispone de dicha información.
-- Su objetivo es reducir el tamaño de los mensajes y evitar redundancia.
+### Restricciones
+
+- El valor de **confidence** deberá estar comprendido entre **0.0 y 1.0**.
+- La lista de palabras clave podrá estar vacía cuando no se detecten términos relevantes.
+- Las categorías deberán corresponder al catálogo oficial utilizado por el modelo.
+
+---
 
 ### Ejemplo
 
 ```json
 {
-    "id": "550e8400-e29b-41d4-a716-446655440000"
-}
-```
-
----
-
-## 6.3 Status
-
-Representa el estado de ejecución de una operación realizada por el componente Data Science.
-
-Este modelo será reutilizado por todas las respuestas del contrato de integración.
-
-### Valores
-
-| Valor | Descripción |
-|--------|-------------|
-| SUCCESS | La operación finalizó correctamente. |
-| FAILED | La operación no pudo completarse. |
-
-### Observaciones
-
-- Todos los modelos de respuesta reutilizarán esta enumeración.
-- Nuevos estados deberán incorporarse manteniendo compatibilidad con versiones anteriores.
-
----
-
-## 6.4 RequestMetadata
-
-Representa información adicional enviada por Backend para complementar una solicitud.
-
-Su contenido es opcional y podrá evolucionar sin modificar la estructura principal del contrato.
-
-### Atributos
-
-| Campo | Tipo | Obligatorio | Descripción |
-|--------|------|-------------|-------------|
-| uploadedBy | String | No | Usuario responsable de la incorporación del documento. |
-| source | String | No | Origen desde el cual se generó la solicitud. |
-| language | String | No | Idioma preferido asociado a la solicitud. |
-
-### Observaciones
-
-- Todos los atributos son opcionales.
-- Backend podrá incorporar nuevos atributos compatibles sin afectar las operaciones existentes.
-
-### Ejemplo
-
-```json
-{
-    "uploadedBy": "USR-1001",
-    "source": "WEB",
-    "language": "es"
-}
-```
-
----
-
-## 6.5 ResponseMetadata
-
-Representa información adicional generada durante la ejecución de una consulta sobre la Base de Conocimiento.
-
-Su objetivo es proporcionar información complementaria sin afectar el resultado principal de la operación.
-
-### Atributos
-
-| Campo | Tipo | Obligatorio | Descripción |
-|--------|------|-------------|-------------|
-| confidence | Decimal | No | Nivel estimado de confianza de la respuesta. |
-| references | Reference[] | No | Documentos utilizados para construir la respuesta. |
-
-### Observaciones
-
-- Los atributos son opcionales.
-- Nuevos campos podrán incorporarse en futuras versiones sin romper la compatibilidad del contrato.
-
-### Ejemplo
-
-```json
-{
-    "confidence": 0.96,
-    "references": [
+    "category": "Arquitectura",
+    "subcategory": "Microservicios",
+    "confidence": 0.97,
+    "keywords": [
         {
-            "id": "550e8400-e29b-41d4-a716-446655440000",
-            "title": "Guía de Arquitectura"
+            "term": "docker",
+            "score": 0.96
+        },
+        {
+            "term": "kubernetes",
+            "score": 0.93
         }
     ]
 }
@@ -414,335 +811,304 @@ Su objetivo es proporcionar información complementaria sin afectar el resultado
 
 ---
 
-## 6.6 Statistics
+## 7.2 Keyword
 
-Representa información estadística generada durante el procesamiento documental.
+### Objetivo
 
-Estos datos tienen fines informativos y no deberán utilizarse como parte de la lógica funcional del sistema.
+Representa una palabra clave identificada durante el proceso de clasificación.
+
+---
 
 ### Atributos
 
 | Campo | Tipo | Obligatorio | Descripción |
 |--------|------|-------------|-------------|
-| pagesProcessed | Integer | No | Número de páginas procesadas. |
-| chunksGenerated | Integer | No | Cantidad de fragmentos generados. |
-| detectedLanguage | String | No | Idioma identificado automáticamente. |
-| documentCategory | String | No | Categoría detectada para el documento. |
+| term | String | Sí | Término identificado. |
+| score | Decimal | No | Nivel de relevancia del término. |
 
-### Observaciones
+---
 
-- La disponibilidad de los atributos dependerá del tipo de documento procesado.
-- Backend no deberá asumir que todos los valores estarán presentes.
+### Restricciones
+
+Cuando el atributo **score** sea informado deberá encontrarse entre **0.0 y 1.0**.
+
+---
 
 ### Ejemplo
 
 ```json
 {
-    "pagesProcessed": 18,
-    "chunksGenerated": 154,
-    "detectedLanguage": "es",
-    "documentCategory": "Arquitectura"
+    "term": "docker",
+    "score": 0.96
 }
 ```
 
 ---
 
-## 6.7 Reference
+## 7.3 Metadata
 
-Representa una referencia a uno de los documentos utilizados por Data Science para generar una respuesta.
+### Objetivo
 
-Su propósito es permitir que Backend conozca el origen de la información presentada al usuario.
+Representa información adicional enviada por Backend para complementar una solicitud.
+
+Su contenido es completamente opcional y podrá evolucionar sin afectar la compatibilidad del contrato.
+
+---
 
 ### Atributos
 
 | Campo | Tipo | Obligatorio | Descripción |
 |--------|------|-------------|-------------|
-| id | UUID | Sí | Identificador del documento utilizado. |
-| title | String | Sí | Título del documento. |
+| source | String | No | Origen de la solicitud. |
+| language | String | No | Idioma esperado del contenido. |
+| client | String | No | Cliente consumidor de la API. |
 
-### Observaciones
-
-- No representa el documento completo.
-- Su finalidad es facilitar la trazabilidad de las respuestas generadas.
+---
 
 ### Ejemplo
 
 ```json
 {
-    "id": "550e8400-e29b-41d4-a716-446655440000",
-    "title": "Guía de Arquitectura"
+    "source": "WEB",
+    "language": "es",
+    "client": "Backend"
 }
 ```
 
 ---
 
-# 7. Reglas de Validación y Compatibilidad
+### Observaciones
 
-Este capítulo define las reglas que deberán cumplirse durante el intercambio de información entre los componentes **Backend** y **Data Science**.
+El objeto **Metadata** está diseñado para ser extensible y proporcionar información contextual adicional sobre la solicitud.
 
-Las validaciones descritas buscan garantizar la consistencia de los modelos, reducir errores durante la integración y establecer claramente la responsabilidad de cada componente.
+La incorporación de nuevos atributos opcionales no deberá afectar la compatibilidad del contrato de integración ni modificar el comportamiento esperado de los modelos existentes.
 
-> [!IMPORTANT]
->
-> El cumplimiento de estas reglas forma parte del contrato de integración.
-> Cada componente será responsable únicamente de las validaciones que le correspondan según este documento.
+Backend podrá utilizar este objeto para enviar información adicional requerida por futuras versiones del sistema sin necesidad de modificar los modelos principales.
 
 ---
 
-## 7.1 Reglas Generales
+## 7.4 Status
 
-| Código | Regla | Responsable |
-|---------|--------|-------------|
-| RV-01 | Todos los identificadores deberán cumplir el formato UUID. | Backend |
-| RV-02 | Todas las fechas deberán utilizar el estándar ISO-8601 en UTC. | Backend |
-| RV-03 | Los atributos opcionales podrán omitirse cuando no exista información disponible. | Ambos |
-| RV-04 | Todos los modelos deberán respetar las convenciones definidas en este documento. | Ambos |
+### Objetivo
+
+Representa el estado general de una operación ejecutada por el componente Data Science.
 
 ---
 
-## 7.2 Validación de ProcessDocumentRequest
+### Valores Permitidos
 
-| Código | Regla | Responsable |
-|---------|--------|-------------|
-| RV-10 | projectId es obligatorio. | Backend |
-| RV-11 | document.id es obligatorio. | Backend |
-| RV-12 | document.uri es obligatorio. | Backend |
-| RV-13 | document.type deberá corresponder a un formato soportado. | Backend |
-| RV-14 | El documento deberá existir en la ubicación indicada por document.uri. | Backend |
-| RV-15 | uploadedAt deberá corresponder a una fecha válida cuando sea informado. | Backend |
+| Valor | Descripción |
+|--------|-------------|
+| SUCCESS | La operación finalizó correctamente. |
+| FAILED | La operación no pudo completarse. |
+
+---
 
 ### Observaciones
 
-- Data Science asumirá que Backend realizó estas validaciones antes de iniciar el procesamiento.
-- La inexistencia del documento durante el procesamiento deberá reportarse como un error de ejecución y no como un error de validación.
+Todos los modelos de respuesta reutilizarán esta enumeración para indicar el resultado general de la operación.
 
----
-
-## 7.3 Validación de AnswerQuestionRequest
-
-| Código | Regla | Responsable |
-|---------|--------|-------------|
-| RV-20 | projectId es obligatorio. | Backend |
-| RV-21 | question no podrá ser nula ni vacía. | Backend |
-| RV-22 | conversationId deberá cumplir el formato UUID cuando sea informado. | Backend |
-
-### Observaciones
-
-- Backend será responsable de validar la estructura de la solicitud antes de invocar a Data Science.
-
----
-
-## 7.4 Validaciones durante el Procesamiento
-
-Las siguientes validaciones corresponden al componente Data Science y serán ejecutadas durante el procesamiento de las solicitudes.
-
-| Código | Regla |
-|---------|--------|
-| RV-30 | Verificar que el tipo de documento pueda ser procesado. |
-| RV-31 | Verificar que el contenido del documento pueda ser leído correctamente. |
-| RV-32 | Verificar que el documento pueda ser incorporado a la Base de Conocimiento. |
-| RV-33 | Verificar que el proyecto exista dentro del contexto de la Base de Conocimiento. |
-| RV-34 | Verificar que exista información suficiente para responder una consulta. |
-
-### Observaciones
-
-El incumplimiento de estas reglas deberá generar una respuesta con estado **FAILED**, utilizando el modelo de respuesta definido en este documento.
-
----
-
-## 7.5 Reglas de Compatibilidad
-
-Con el fin de preservar la estabilidad del contrato de integración, deberán respetarse las siguientes reglas.
-
-| Código | Regla |
-|---------|--------|
-| RV-40 | Los nuevos atributos deberán ser opcionales cuando sea posible. |
-| RV-41 | No deberán eliminarse atributos existentes sin incrementar la versión mayor del contrato. |
-| RV-42 | Los nuevos valores de una enumeración deberán mantener compatibilidad con versiones anteriores. |
-| RV-43 | Los modelos compartidos definidos en el Capítulo 6 constituyen la única fuente oficial de definición de estructuras reutilizables. |
+La incorporación de nuevos estados deberá mantener la compatibilidad con las versiones anteriores del contrato.
 
 ---
 
 # 8. Escenarios de Integración
 
-Este capítulo presenta ejemplos completos del intercambio de información entre los componentes **Backend** y **Data Science**.
+Este capítulo presenta los principales escenarios de interacción entre el componente Backend y la API REST del componente Data Science.
 
-Su objetivo es ilustrar la utilización de los modelos definidos en este documento dentro de los principales escenarios de integración.
-
-Los ejemplos aquí presentados tienen fines ilustrativos y utilizan datos ficticios.
+Los diagramas y ejemplos aquí descritos ilustran el uso esperado de los modelos definidos en este documento.
 
 ---
 
-## 8.1 Incorporación de Documento
+## 8.1 Clasificación de Documento
 
-Este escenario representa el proceso mediante el cual Backend solicita la incorporación de un documento a la Base de Conocimiento administrada por Data Science.
+### Descripción
+
+Backend envía un documento para ser clasificado automáticamente.
 
 ### Flujo
 
-Backend
+```mermaid
+sequenceDiagram
 
-↓
+    participant Frontend
 
-ProcessDocumentRequest
+    participant Backend
 
-↓
+    participant DataScienceAPI
 
-Data Science
+    participant ModeloML
 
-↓
+    Frontend->>Backend: Cargar documento
 
-ProcessDocumentResponse
+    Backend->>DataScienceAPI: POST /api/v1/predict/file
+
+    DataScienceAPI->>ModeloML: Ejecutar inferencia
+
+    ModeloML-->>DataScienceAPI: Resultado
+
+    DataScienceAPI-->>Backend: ClassificationResponse
+
+    Backend-->>Frontend: Resultado de clasificación
+```
 
 ---
 
-### Solicitud
+## 8.2 Clasificación de Texto
 
-```json
-{
-  "projectId": "c3fa5d86-8a77-41b4-bc4c-8b3f9e95a2d1",
-  "document": {
-    "id": "550e8400-e29b-41d4-a716-446655440000",
-    "uri": "/documents/api-authentication.pdf",
-    "type": "PDF"
-  },
-  "uploadedAt": "2026-07-21T15:20:00Z",
-  "metadata": {
-    "uploadedBy": "USR-1001",
-    "source": "WEB",
-    "language": "es"
-  }
-}
-```
+### Descripción
 
-### Respuesta
-
-```json
-{
-  "document": {
-    "id": "550e8400-e29b-41d4-a716-446655440000"
-  },
-  "status": "SUCCESS",
-  "processedAt": "2026-07-21T15:24:31Z",
-  "processingTime": 3821,
-  "message": "Documento incorporado correctamente a la Base de Conocimiento.",
-  "statistics": {
-    "pagesProcessed": 18,
-    "chunksGenerated": 154,
-    "detectedLanguage": "es",
-    "documentCategory": "Arquitectura"
-  }
-}
-```
-
-### Observaciones
-
-- Backend mantiene la propiedad del documento durante todo el proceso.
-- Data Science procesa el contenido y actualiza la Base de Conocimiento.
-- El documento no es modificado por Data Science.
-- La respuesta devuelve únicamente una referencia al documento procesado.
-
-## 8.2 Consulta a la Base de Conocimiento
-
-Este escenario representa el proceso mediante el cual Backend solicita una respuesta basada en la Base de Conocimiento.
+Backend envía contenido textual directamente para obtener una clasificación.
 
 ### Flujo
 
-Backend
+```mermaid
+sequenceDiagram
 
-↓
+    participant Backend
 
-AnswerQuestionRequest
+    participant DataScienceAPI
 
-↓
+    participant ModeloML
 
-Data Science
+    Backend->>DataScienceAPI: POST /api/v1/predict/text
 
-↓
+    DataScienceAPI->>ModeloML: Ejecutar inferencia
 
-AnswerQuestionResponse
+    ModeloML-->>DataScienceAPI: Resultado
+
+    DataScienceAPI-->>Backend: ClassificationResponse
+```
 
 ---
 
-### Solicitud
+## 8.3 Error de Validación
 
-```json
-{
-  "projectId": "c3fa5d86-8a77-41b4-bc4c-8b3f9e95a2d1",
-  "question": "¿Cómo funciona el proceso de autenticación?",
-  "conversationId": "9d27a4f2-f4f4-4567-9e18-f55f3b0d12aa",
-  "metadata": {
-    "language": "es",
-    "source": "WEB"
-  }
-}
+### Descripción
+
+La solicitud contiene información inválida y no puede ser procesada.
+
+### Flujo
+
+```mermaid
+sequenceDiagram
+
+    participant Backend
+
+    participant DataScienceAPI
+
+    Backend->>DataScienceAPI: Solicitud inválida
+
+    DataScienceAPI-->>Backend: ErrorResponse (HTTP 422)
 ```
-
-### Respuesta
-
-```json
-{
-  "status": "SUCCESS",
-  "answer": "La autenticación del sistema utiliza JWT para validar las solicitudes entre componentes.",
-  "generatedAt": "2026-07-21T17:10:30Z",
-  "processingTime": 842,
-  "message": "Consulta procesada correctamente.",
-  "metadata": {
-    "confidence": 0.96,
-    "references": [
-      {
-        "id": "550e8400-e29b-41d4-a716-446655440000",
-        "title": "Guía de Arquitectura"
-      },
-      {
-        "id": "66af7813-a48b-4894-8d95-8216cb3d85aa",
-        "title": "Manual Backend"
-      }
-    ]
-  }
-}
-```
-
-### Observaciones
-
-- La respuesta es generada utilizando la Base de Conocimiento del proyecto.
-- Backend es responsable de presentar la respuesta al usuario.
-- Las referencias permiten identificar los documentos utilizados durante la generación de la respuesta.
 
 ---
 
-# 9. Versionado
+## 8.4 Estado del Servicio
 
-La evolución de los modelos definidos en este documento deberá mantener compatibilidad con el documento **Backend-Data-Contract.md**.
+### Descripción
 
-El versionado seguirá el esquema de **Versionado Semántico (Semantic Versioning)**.
+Backend verifica la disponibilidad del servicio antes de realizar solicitudes de clasificación.
 
-| Versión | Alcance |
-|----------|---------|
-| Major | Cambios incompatibles con versiones anteriores. |
-| Minor | Incorporación de nuevos modelos o atributos compatibles. |
-| Patch | Corrección de errores o mejoras que no modifican el contrato. |
+### Flujo
 
-## Reglas de Compatibilidad
+```mermaid
+sequenceDiagram
 
-- Los nuevos atributos deberán ser opcionales siempre que sea posible.
-- No deberán eliminarse atributos existentes sin incrementar la versión mayor.
-- Los modelos compartidos definidos en el Capítulo 6 constituyen la fuente oficial de estructuras reutilizables.
-- Toda modificación deberá actualizar el historial de cambios del documento.
+    participant Backend
 
-> [!IMPORTANT]
->
-> Cualquier cambio en los modelos definidos en este documento deberá evaluarse conjuntamente por los equipos Backend y Data Science antes de su implementación.
+    participant DataScienceAPI
 
+    Backend->>DataScienceAPI: GET /api/v1/health
 
-# Anexo A – Glosario
+    DataScienceAPI-->>Backend: HealthResponse
+```
 
-| Término                | Definición                                                                  |
-| ---------------------- | --------------------------------------------------------------------------- |
-| **DocumentDescriptor** | Modelo que describe un documento que será procesado por Data Science.       |
-| **DocumentReference**  | Modelo que identifica un documento previamente conocido por Backend.        |
-| **Knowledge Base**     | Repositorio de conocimiento administrado exclusivamente por Data Science.   |
-| **RequestMetadata**    | Información adicional enviada por Backend junto con una solicitud.          |
-| **ResponseMetadata**   | Información complementaria generada por Data Science durante una respuesta. |
-| **Statistics**         | Información estadística derivada del procesamiento documental.              |
-| **Reference**          | Referencia a un documento utilizado para generar una respuesta.             |
-| **Status**             | Estado de ejecución de una operación del componente Data Science.           |
+---
+
+# 9. Compatibilidad y Versionado
+
+La evolución de este contrato deberá preservar la compatibilidad entre las diferentes versiones de Backend y Data Science.
+
+## 9.1 Compatibilidad
+
+Se consideran cambios compatibles:
+
+- Incorporar nuevos atributos opcionales.
+- Agregar nuevos endpoints.
+- Incorporar nuevos valores de enumeraciones cuando no afecten el comportamiento existente.
+- Mejorar la documentación.
+
+No se consideran compatibles:
+
+- Eliminar atributos obligatorios.
+- Cambiar el tipo de datos de un atributo existente.
+- Modificar el significado funcional de un atributo.
+- Cambiar la estructura de los modelos de respuesta.
+
+---
+
+## 9.2 Versionado
+
+El contrato utilizará Versionado Semántico (Semantic Versioning).
+
+Formato:
+
+MAJOR.MINOR.PATCH
+
+Donde:
+
+- **MAJOR**: cambios incompatibles.
+- **MINOR**: nuevas funcionalidades compatibles.
+- **PATCH**: correcciones sin impacto funcional.
+
+---
+
+## 9.3 Política de Deprecación
+
+Cuando un atributo o endpoint sea reemplazado:
+
+- deberá marcarse como **Deprecated**;
+- permanecerá disponible durante el período definido por el equipo de arquitectura;
+- la documentación deberá indicar la alternativa recomendada.
+
+---
+
+# 10. Anexos
+
+## 10.1 Acrónimos
+
+| Acrónimo | Descripción |
+|----------|-------------|
+| API | Application Programming Interface |
+| DTO | Data Transfer Object |
+| HTTP | Hypertext Transfer Protocol |
+| JSON | JavaScript Object Notation |
+| ML | Machine Learning |
+| REST | Representational State Transfer |
+| UUID | Universally Unique Identifier |
+| UTF-8 | Unicode Transformation Format - 8 bits |
+| UTC | Coordinated Universal Time |
+
+---
+
+## 10.2 Glosario
+
+| Término | Definición |
+|----------|------------|
+| Clasificación | Resultado generado por el modelo de Machine Learning. |
+| Confianza | Probabilidad asociada a la predicción realizada por el modelo. |
+| Inferencia | Proceso mediante el cual el modelo genera una predicción a partir de una entrada. |
+| Keyword | Palabra clave relevante identificada durante el procesamiento del contenido. |
+| Metadata | Información adicional utilizada para contextualizar una solicitud. |
+
+---
+
+## 10.3 Referencias
+
+- IEEE 830 – Recommended Practice for Software Requirements Specifications.
+- IEEE 1016 – Software Design Description.
+- OpenAPI Specification 3.1.
+- RFC 8259 – The JavaScript Object Notation (JSON) Data Interchange Format.
+- ISO 8601 – Date and Time Format.
+- Semantic Versioning 2.0.0.
