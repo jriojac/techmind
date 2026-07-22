@@ -61,7 +61,7 @@ DATASET_PATH = (
     PROJECT_ROOT
     / "datasets"
     / "raw"
-    / "documents_prueba_data_generada_data.csv"
+    / "master_dataset_v1.csv"
 )
 
 
