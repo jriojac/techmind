@@ -1,25 +1,60 @@
-# Bytecode de Python
+# ==========================================
+# Python
+# ==========================================
+
+# Bytecode
+__pycache__/
 **/__pycache__/
 *.py[cod]
 *.pyo
 *.pyd
 *$py.class
 
-# Pytest
-.pytest_cache/
+# ==========================================
+# Testing
+# ==========================================
 
-# Coverage
+.pytest_cache/
 .coverage
 htmlcov/
 
-# Virtual environments
+# ==========================================
+# Virtual Environments
+# ==========================================
+
 .venv/
 venv/
 
+# ==========================================
 # IDE
+# ==========================================
+
 .vscode/
 .idea/
 
-# OS
+# ==========================================
+# Operating System
+# ==========================================
+
 .DS_Store
 Thumbs.db
+
+
+# Jupyter / Google Colab
+.ipynb_checkpoints/
+
+# Logs
+*.log
+
+# Archivos temporales
+*.tmp
+
+# Variables de entorno
+.env
+
+# Modelos entrenados
+models/
+artifacts/
+
+# Archivos grandes de entrenamiento (si en algún momento deciden no versionarlos)
+# datasets/processed/

@@ -7,17 +7,12 @@ Module:
     stopwords_remover.py
 
 Description:
-    Implements the stop words removal component of the
-    preprocessing pipeline.
+    Implements the stop words removal component.
 
 Sprint:
-    DS-04 - Preprocesamiento del Dataset
+    DS-04
 ==========================================================
 """
-
-# ==========================================================
-# Imports
-# ==========================================================
 
 from nltk.corpus import stopwords
 
@@ -31,31 +26,38 @@ from data_science.preprocessing.base_preprocessor import (
 )
 
 
-# ==========================================================
-# Preprocessing Components
-# ==========================================================
-
 class StopWordsRemover(BasePreprocessor):
     """
-    Removes stop words from the document text according
-    to the document language.
+    Removes stop words according to the document language.
     """
 
-    _STOPWORDS = {
-        "es": set(stopwords.words("spanish")),
-        "en": set(stopwords.words("english")),
+    _LANGUAGE_MAPPING = {
+        "english": "english",
+        "en": "english",
+        "spanish": "spanish",
+        "es": "spanish",
+        "portuguese": "portuguese",
+        "pt": "portuguese",
     }
 
     def process(
         self,
         document: DocumentRecord,
     ) -> ProcessedDocument:
-        """
-        Executes the stop words removal process.
-        """
 
-        original_text = document["text"]
-        language = document.get("language", "en")
+        #original_text = document["text"]
+
+        #language = (
+        #    document.get("language", "english")
+        #    .lower()
+        #    .strip()
+        #)
+
+        original_text = document.text
+
+        language = (
+            document.language.lower().strip()
+        )
 
         processed_text = self._remove_stopwords(
             original_text,
@@ -72,14 +74,15 @@ class StopWordsRemover(BasePreprocessor):
         text: str,
         language: str,
     ) -> str:
-        """
-        Removes stop words from the input text.
-        """
 
-        stop_words = self._STOPWORDS.get(language)
+        nltk_language = self._LANGUAGE_MAPPING.get(
+            language,
+            "english",
+        )
 
-        if stop_words is None:
-            return text
+        stop_words = set(
+            stopwords.words(nltk_language)
+        )
 
         words = text.split()
 

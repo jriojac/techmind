@@ -19,6 +19,8 @@ Sprint:
 # Imports
 # ==========================================================
 
+import re
+
 from nltk.stem import WordNetLemmatizer
 
 from data_science.data.domain import (
@@ -50,7 +52,8 @@ class Lemmatizer(BasePreprocessor):
         Executes the lemmatization process.
         """
 
-        original_text = document["text"]
+        # original_text = document["text"]
+        original_text = document.text
 
         lemmas = self._lemmatize_text(
             original_text,
@@ -73,7 +76,10 @@ class Lemmatizer(BasePreprocessor):
         if not text:
             return []
 
-        words = text.split()
+        words = re.findall(
+            r"\b[\w\.]+\b",
+            text,
+        )
 
         return [
             self._LEMMATIZER.lemmatize(word)

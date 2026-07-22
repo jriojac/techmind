@@ -77,27 +77,50 @@ class PreprocessingPipeline:
 
         working_document = deepcopy(document)
 
+        # ---------------------------------------------
+        # Text Cleaning
+        # ---------------------------------------------
+
         processed = self._cleaner.process(
             working_document
         )
 
-        working_document["text"] = processed.processed_text
+        # working_document["text"] = processed.processed_text
+        working_document.text = processed.processed_text
+
+        # ---------------------------------------------
+        # Text Normalization
+        # ---------------------------------------------
 
         processed = self._normalizer.process(
             working_document
         )
 
-        working_document["text"] = processed.processed_text
+        # working_document["text"] = processed.processed_text
+        working_document.text = processed.processed_text
+
+        # ---------------------------------------------
+        # Stop Words Removal
+        # ---------------------------------------------
 
         processed = self._stopwords.process(
             working_document
         )
 
-        working_document["text"] = processed.processed_text
+        # working_document["text"] = processed.processed_text
+        working_document.text = processed.processed_text
+
+        # ---------------------------------------------
+        # Tokenization
+        # ---------------------------------------------
 
         tokens = self._tokenizer.process(
             working_document
         )
+
+        # ---------------------------------------------
+        # Lemmatization
+        # ---------------------------------------------
 
         lemmas = self._lemmatizer.process(
             working_document
@@ -105,7 +128,8 @@ class PreprocessingPipeline:
 
         return ProcessedDocument(
             document=document,
-            processed_text=processed.processed_text,
+            # processed_text=working_document["text"],
+            processed_text=working_document.text,
             tokens=tokens.tokens,
             lemmas=lemmas.lemmas,
         )

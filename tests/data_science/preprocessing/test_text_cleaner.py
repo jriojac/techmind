@@ -39,15 +39,14 @@ def _create_document(
     Crea un documento de prueba.
     """
 
-    return {
-        "document_id": "doc-001",
-        "source": "unit-test",
-        "title": "Documento de prueba",
-        "text": text,
-        "category": "test",
-        "language": "es",
-    }
-
+    return DocumentRecord(
+        document_id="doc-001",
+        source="unit-test",
+        title="Documento de prueba",
+        text=text,
+        category="test",
+        language="es",
+    )
 
 # ==========================================================
 # Test Cases

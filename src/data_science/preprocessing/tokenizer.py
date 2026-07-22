@@ -48,7 +48,8 @@ class Tokenizer(BasePreprocessor):
         Executes the tokenization process.
         """
 
-        original_text = document["text"]
+        #original_text = document["text"]
+        original_text = document.text
 
         tokens = self._tokenize_text(
             original_text,

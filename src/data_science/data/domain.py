@@ -22,13 +22,26 @@ Sprint:
 from dataclasses import dataclass, field
 #from typing import Literal, TypedDict
 #from typing import NotRequired, TypedDict
-from typing import Literal, NotRequired, TypedDict
+#rom typing import Literal, NotRequired, TypedDict
+from typing import Literal
 
 # ==========================================================
 # Modelos del Dataset
 # ==========================================================
 
-class DocumentRecord(TypedDict):
+from dataclasses import dataclass, field
+from typing import Literal
+
+# ==========================================================
+# Modelos del Dataset
+# ==========================================================
+
+@dataclass(slots=True)
+class DocumentRecord:
+    """
+    Represents a technical document before entering the
+    preprocessing pipeline.
+    """
 
     document_id: str
     source: str
@@ -37,12 +50,11 @@ class DocumentRecord(TypedDict):
     category: str
     language: str
 
-    source_id: NotRequired[str]
-    tags: NotRequired[list[str]]
-    author: NotRequired[str]
-    created_date: NotRequired[str]
-    url: NotRequired[str]
-
+    source_id: str | None = None
+    tags: list[str] = field(default_factory=list)
+    author: str | None = None
+    created_date: str | None = None
+    url: str | None = None
 
 @dataclass(slots=True)
 class ValidationIssue:

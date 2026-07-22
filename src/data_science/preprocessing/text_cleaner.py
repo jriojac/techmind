@@ -59,7 +59,7 @@ class TextCleaner(BasePreprocessor):
             Documento con el texto limpio.
         """
 
-        original_text = document["text"]
+        original_text = document.text
 
         cleaned_text = self._clean_text(original_text)
 

@@ -149,7 +149,8 @@ def test_pipeline_preserves_document():
 
     result = pipeline.process(document)
 
-    assert result.document["document_id"] == "DOC-001"
+    # assert result.document["document_id"] == "DOC-001"
+    assert result.document.document_id == "DOC-001"
 
 
 def test_pipeline_handles_spanish():

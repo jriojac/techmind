@@ -59,7 +59,8 @@ class TextNormalizer(BasePreprocessor):
             Documento con el texto normalizado.
         """
 
-        original_text = document["text"]
+        #original_text = document["text"]
+        original_text = document.text
 
         normalized_text = self._normalize_text(original_text)
 
