@@ -4,18 +4,37 @@
 
 Desarrollado por el equipo **G9 – LATAM Team 16** para el **Hackathon Oracle Next Education (ONE)**.
 
----
 
 # Estado del Proyecto
 
-| Componente            | Estado |
-| --------------------- | :----: |
-| Arquitectura          |    ✅   |
-| Documentación técnica |    ✅   |
-| Backend               |   🚧   |
-| Ciencia de Datos      |   🚧   |
-| Infraestructura       |    ⏳   |
-| Despliegue            |    ⏳   |
+Versión del MVP: 0.1
+
+Estado General
+
+🟢 Arquitectura estable
+
+🟢 Dataset Maestro construido
+
+🟢 Pipeline de preprocesamiento validado
+
+🟢 109/109 pruebas aprobadas
+
+🟡 Backend en desarrollo
+
+🟡 Frontend en desarrollo
+
+🔵 Próxima etapa: entrenamiento del modelo e integración
+---
+
+| Componente      | Estado | Observaciones                             |
+| --------------- | :----:  | -----------------------------------------|
+| Arquitectura    |   ✅   | Definida y aprobada                       |
+| Backend         |   🚧   | Desarrollo en progreso                    |
+| Data Science    |   🚧   | Dataset y preprocesamiento completados    |
+| Frontend        |   🚧   | Desarrollo en progreso                    |
+| Integración     |   ⏳   | Pendiente                                 |
+| Infraestructura |   ⏳   | Pendiente                                 |
+| Despliegue      |   ⏳   | Pendiente                                 |
 
 
 # Descripción
@@ -85,6 +104,28 @@ El componente de Ciencia de Datos es responsable de:
 📄 Documentación específica:
 
 - `src/data_science/README.md`
+
+
+## Estado del Componente Data Science
+
+### Completado
+
+- Arquitectura del componente
+- Dataset Maestro
+- Readers
+- Loaders
+- Validación del dataset
+- Pipeline de preprocesamiento
+- Refactorización del dominio
+- Suite de pruebas automatizadas (109/109)
+
+### En desarrollo
+
+- Entrenamiento del modelo
+- Evaluación
+- Persistencia
+- Integración con Backend
+
 
 # Estructura del Repositorio
 
@@ -203,7 +244,7 @@ python -m pytest --cov=src --cov-report=term-missing
 
 | Métrica | Valor |
 |----------|------:|
-| Tests automatizados | 61 |
+| Tests automatizados | 109 |
 | Cobertura del componente Data Science | 98% |
 
 > La cobertura corresponde al módulo de adquisición de datos del componente de Ciencia de Datos.
@@ -244,7 +285,7 @@ La documentación del proyecto está organizada para facilitar la navegación y 
 | DS-01  | ✅ Arquitectura del Componente de Ciencia de Datos     |
 | DS-02  | ✅ Investigación y selección de fuentes de información |
 | DS-03  | ✅ Construcción e integración del Dataset Maestro      |
-| DS-04  | ⏳ Limpieza, validación y preprocesamiento del Dataset |
+| DS-04  | ✅ Limpieza, validación y preprocesamiento del Dataset |
 | DS-05  | ⏳ Análisis Exploratorio de Datos (EDA)                |
 | DS-06  | ⏳ Ingeniería de Características                       |
 | DS-07  | ⏳ Entrenamiento del Modelo                            |
@@ -267,6 +308,11 @@ La documentación del proyecto está organizada para facilitar la navegación y 
 - Integración mediante una interfaz estable (`predict(title, text)`).
 - Documentación técnica basada en SDS y ADR.
 - Infraestructura preparada para Oracle Cloud Infrastructure (OCI).
+- Validación automática del dataset.
+- Pipeline de preprocesamiento.
+- Arquitectura basada en DocumentRecord.
+- Suite de pruebas automatizadas.
+- Readers y Loaders para múltiples formatos (si ya están implementados).
 
 
 # Contribución
