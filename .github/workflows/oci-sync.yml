@@ -17,30 +17,50 @@ jobs:
       - name: Checkout del código
         uses: actions/checkout@v4
 
-      - name: Configurar CLI de Oracle Cloud (OCI)
-        uses: oracle-actions/setup-oci-cli@v1
+      - name: Configurar Python
+        uses: actions/setup-python@v5
         with:
-          user_ocid: ${{ secrets.OCI_CLI_USER }}
-          tenancy_ocid: ${{ secrets.OCI_CLI_TENANCY }}
-          fingerprint: ${{ secrets.OCI_CLI_FINGERPRINT }}
-          region: ${{ secrets.OCI_CLI_REGION }}
-          api_key: ${{ secrets.OCI_CLI_KEY_CONTENT }}
+          python-version: '3.11'
+
+      - name: Instalar OCI CLI
+        run: |
+          python -m pip install --upgrade pip
+          pip install oci-cli
 
       - name: Subir Dataset Maestro a OCI Object Storage
+        env:
+          OCI_CLI_USER: ${{ secrets.OCI_CLI_USER }}
+          OCI_CLI_TENANCY: ${{ secrets.OCI_CLI_TENANCY }}
+          OCI_CLI_FINGERPRINT: ${{ secrets.OCI_CLI_FINGERPRINT }}
+          OCI_CLI_REGION: ${{ secrets.OCI_CLI_REGION }}
+          OCI_CLI_KEY_CONTENT: ${{ secrets.OCI_CLI_KEY_CONTENT }}
         run: |
           if [ -f "datasets/raw/master_dataset_v1.csv" ]; then
-            echo "Subiendo master_dataset_v1.csv a OCI..."
+            echo "Subiendo master_dataset_v1.csv a OCI Object Storage..."
             oci os object put \
               --bucket-name techmind-bucket \
               --file datasets/raw/master_dataset_v1.csv \
               --name datasets/master_dataset_v1.csv \
               --force
+          elif [ -f "datasets/processed/master_dataset_v1.csv" ]; then
+            echo "Subiendo master_dataset_v1.csv a OCI Object Storage..."
+            oci os object put \
+              --bucket-name techmind-bucket \
+              --file datasets/processed/master_dataset_v1.csv \
+              --name datasets/master_dataset_v1.csv \
+              --force
           fi
 
       - name: Subir Artefactos y Modelos a OCI Object Storage
+        env:
+          OCI_CLI_USER: ${{ secrets.OCI_CLI_USER }}
+          OCI_CLI_TENANCY: ${{ secrets.OCI_CLI_TENANCY }}
+          OCI_CLI_FINGERPRINT: ${{ secrets.OCI_CLI_FINGERPRINT }}
+          OCI_CLI_REGION: ${{ secrets.OCI_CLI_REGION }}
+          OCI_CLI_KEY_CONTENT: ${{ secrets.OCI_CLI_KEY_CONTENT }}
         run: |
-          if [ -d "artifacts" ]; then
-            echo "Subiendo artefactos a OCI..."
+          if [ -d "artifacts" ] && [ "$(ls -A artifacts)" ]; then
+            echo "Subiendo artefactos a OCI Object Storage..."
             oci os object bulk-upload \
               --bucket-name techmind-bucket \
               --src-dir artifacts/ \
