@@ -1,0 +1,49 @@
+name: Sync Data and Models to OCI Object Storage
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'datasets/**'
+      - 'artifacts/**'
+  workflow_dispatch:
+
+jobs:
+  upload-to-oci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      - name: Configurar CLI de Oracle Cloud (OCI)
+        uses: oracle-actions/setup-oci-cli@v1
+        with:
+          user_ocid: ${{ secrets.OCI_CLI_USER }}
+          tenancy_ocid: ${{ secrets.OCI_CLI_TENANCY }}
+          fingerprint: ${{ secrets.OCI_CLI_FINGERPRINT }}
+          region: ${{ secrets.OCI_CLI_REGION }}
+          api_key: ${{ secrets.OCI_CLI_KEY_CONTENT }}
+
+      - name: Subir Dataset Maestro a OCI Object Storage
+        run: |
+          if [ -f "datasets/raw/master_dataset_v1.csv" ]; then
+            echo "Subiendo master_dataset_v1.csv a OCI..."
+            oci os object put \
+              --bucket-name techmind-bucket \
+              --file datasets/raw/master_dataset_v1.csv \
+              --name datasets/master_dataset_v1.csv \
+              --force
+          fi
+
+      - name: Subir Artefactos y Modelos a OCI Object Storage
+        run: |
+          if [ -d "artifacts" ]; then
+            echo "Subiendo artefactos a OCI..."
+            oci os object bulk-upload \
+              --bucket-name techmind-bucket \
+              --src-dir artifacts/ \
+              --prefix artifacts/ \
+              --overwrite
+          fi
